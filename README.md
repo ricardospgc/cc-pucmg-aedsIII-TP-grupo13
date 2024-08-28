@@ -1,10 +1,13 @@
-# cc-pucmg-aedsIII-TP1-grupo13
-Esse é o repositório do Grupo 13 para o Trabalho Prático 1 da disciplina de Algoritmos e Estruturas de Dados da PUC Minas, realizado no segundo semestre de 2024.
+# cc-pucmg-aedsIII-TP-grupo13
+Esse é o repositório do Grupo 13 para os Trabalhos Práticos da disciplina de Algoritmos e Estruturas de Dados da PUC Minas, realizado no segundo semestre de 2024.
 
 Integrantes:
   - Ricardo Soares Pereira da Gama Cerqueira  - Matrícula: 803833
   - Túlio Gomes Braga                         - Matrícula: 802512
   - Yago Almeida Melo                         - Matrícula: 806454
+
+---
+## TP1
 
 ### Relatório
 "Descrevam um pouco o esforço. Uma descrição do seu trabalho nas suas próprias palavras. 
@@ -28,3 +31,9 @@ A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. 
 - O trabalho está funcionando corretamente?
 - O trabalho está completo?
 - O trabalho é original e não a cópia de um trabalho de outro grupo?
+---
+## TP2
+---
+## TP3
+---
+## TP4
