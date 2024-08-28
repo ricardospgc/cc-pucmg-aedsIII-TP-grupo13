@@ -3,7 +3,7 @@ Esse é o repositório do Grupo 13 para o Trabalho Prático 1 da disciplina de A
 
 Integrantes:
   - Ricardo Soares Pereira da Gama Cerqueira  - Matrícula: 803833
-  - Túlio Gomes Braga                         - Matrícula:
+  - Túlio Gomes Braga                         - Matrícula: 802512
   - Yago Almeida Melo                         - Matrícula:
 
 ### Relatório
