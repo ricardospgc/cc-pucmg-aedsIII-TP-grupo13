@@ -96,21 +96,19 @@ public class Arquivo<T extends Registro>{
      * @return boolean indicando se foi ou nao atualizado.
      * @throws IOException Se ocorrer um erro de I/O durante a atualizacao.
      */
-    protected boolean update(int id, T novoObjeto) throws Exception{
+    protected boolean update(T novoObjeto) throws Exception{
         byte[] b;
         byte lapide;
         long endereco;
-        T objeto = null;
+        T objeto;
         short tamRegistro;
         boolean fim = false;
         arquivo.seek(CABECALHO);
 
-        /*o Update nao pode mudar a data de criacao da tarefa*/
-
         /* quando o update atualizar o status de um objeto para concluido, 
-        ele deve atualizar a data de conclusao pro momento do update*/
+        ele deve atualizar a data de conclusao pro momento do update */
 
-        while(arquivo.getFilePointer()<arquivo.length() && !fim){
+        while(arquivo.getFilePointer() < arquivo.length() && !fim){
             objeto = construtor.newInstance();
             endereco = arquivo.getFilePointer();
             lapide = arquivo.readByte();

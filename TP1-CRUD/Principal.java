@@ -23,8 +23,9 @@ public class Principal {
              * Erro acontece tanto com nome maior, igual ou menor.
              * Nome maior cria um registro mal feito no fim
             */
-            Tarefa tf3 = new Tarefa("testandoAAAA", Status.EM_PROGRESSO, Prioridade.URGENTE);
-            boolean hasUpdated = arqTarefa.update(id1, tf3);
+
+            tf1.setNome("testando"); tf1.setPrioridade(Prioridade.URGENTE); tf1.setStatus(Status.EM_PROGRESSO);
+            boolean hasUpdated = arqTarefa.update(tf1);
 
             if(hasUpdated){
                 System.out.println("\nUpdate bem sucedido!");
@@ -32,8 +33,6 @@ public class Principal {
             } else {
                 System.out.println("Erro ao atualizar");
             }
-
-            System.out.println(arqTarefa.read(id1));
 
             boolean hasDeleted = arqTarefa.delete(id2);
             if(hasDeleted){

@@ -36,7 +36,7 @@ public class Tarefa implements Registro {
     }
 
     /*
-    *   Get e Set do id
+    *   Gets e Sets
     */
     @Override
     public void setId(int id) {
@@ -47,6 +47,21 @@ public class Tarefa implements Registro {
     public int getId() {
         return id;
     }
+
+    public void setNome(String nome){ this.nome = nome;}
+    public String getNome(){ return this.nome; }
+
+    public void setDataCriacao(LocalDateTime d){ this.dataCriacao = d; }
+    public LocalDateTime getDataCriacao(){ return this.dataCriacao; }
+    
+    public void setDataConclusao(LocalDateTime d){ this.dataConclusao = d; }
+    public LocalDateTime getDataConclusao(){ return this.dataConclusao; }
+    
+    public void setStatus(Status s){ this.status = s; }
+    public Status getStatus(){ return this.status; }
+    
+    public void setPrioridade(Prioridade p){ this.prioridade = p; }
+    public Prioridade getPrioridade(){ return this.prioridade; }
     
     // Formata LocalDateTime
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss");
