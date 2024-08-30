@@ -9,21 +9,28 @@ public class Arquivo<T extends Registro>{
     Constructor<T> construtor;
     RandomAccessFile arquivo;
     String nomeArquivo;
+    int numRegistros;
 
+    // Construtor
     public Arquivo(Constructor<T> construtor, String nomeArquivo) throws IOException{
         File f = new File("BaseDeDados");
         if(!f.exists()){
             f.mkdir();
-        }
+        } 
+        new File(".//BaseDeDados//tarefas.db").delete();
+        
+        numRegistros = 0;
         this.construtor = construtor;
-        this.nomeArquivo = ".//BaseDeDados//"+nomeArquivo;
+        this.nomeArquivo = ".//BaseDeDados//" + nomeArquivo;
         arquivo = new RandomAccessFile(this.nomeArquivo, "rw");
         if(arquivo.length() < CABECALHO){
             arquivo.seek(0);
             arquivo.writeInt(0);
         }
-    }
+    }// Construtor
 
+    // ESTRUTURA DO ARQUIVO:
+    /* ------------------------------------------------------ CABECALHO: int numRegistros */
     /* ----------------------------------------------------------------------------- CRUD */
     /* ------------------------------------------------------------ LAPIDE + TAMOBJ + OBJ */
 
@@ -42,6 +49,7 @@ public class Arquivo<T extends Registro>{
         int proximoId = arquivo.readInt()+1;    
         arquivo.seek(0);
         arquivo.writeInt(proximoId);
+        numRegistros++;
         objeto.setId(proximoId);
         arquivo.seek(arquivo.length());
 
@@ -51,7 +59,7 @@ public class Arquivo<T extends Registro>{
         arquivo.write(b);
 
         return objeto.getId();
-    }
+    }// create()
 
 
     /**
@@ -61,7 +69,9 @@ public class Arquivo<T extends Registro>{
      * @return O objeto correspondente ao ID, ou null se nao encontrado.
      * @throws IOException Se ocorrer um erro de I/O durante a leitura.
      */
-    protected T read(int id) throws Exception{
+    protected T read(int id) throws Exception {
+        if(id <= 0 || id > numRegistros) throw new Exception("Id invalido para leitura: " + id);
+        
         byte[] b;
         byte lapide;
         T objeto = null;
@@ -86,7 +96,7 @@ public class Arquivo<T extends Registro>{
         } 
 
         return objeto;  
-    }
+    }// read()
 
     /**
      * Metodo responsavel por atualizar um objeto do arquivo com base no seu ID.
@@ -141,7 +151,7 @@ public class Arquivo<T extends Registro>{
             }   
         }
         return fim;
-    }
+    }// update
 
 
     /**
@@ -178,7 +188,7 @@ public class Arquivo<T extends Registro>{
             }
         }
         return fim;
-    }
+    }// delete()
 
     /* ------------------------------------------------------------------------------------ */ 
 }
