@@ -162,10 +162,12 @@ public class Arquivo<T extends Registro>{
      * @throws IOException Se ocorrer um erro de I/O durante o processo de delete.
      */
     protected boolean delete(int id) throws Exception{
+        if(id <= 0 || id > numRegistros) throw new Exception("Id invalido para leitura: " + id);
+
         byte[] b;
         byte lapide;
         Long endereco;
-        T objeto = null;
+        T objeto;
         boolean fim=false;
         short tamRegistro;
         arquivo.seek(CABECALHO);
