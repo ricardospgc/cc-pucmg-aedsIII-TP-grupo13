@@ -1,3 +1,5 @@
+import Hash.HashExtensivel;
+import Hash.ParIDEndereco;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -10,9 +12,10 @@ public class Arquivo<T extends Registro>{
     RandomAccessFile arquivo;
     String nomeArquivo;
     int numRegistros;
+    HashExtensivel<ParIDEndereco> indiceDireto;
 
     // Construtor
-    public Arquivo(Constructor<T> construtor, String nomeArquivo) throws IOException{
+    public Arquivo(Constructor<T> construtor, String nomeArquivo) throws Exception{
         File f = new File("BaseDeDados");
         if(!f.exists()){
             f.mkdir();
@@ -27,6 +30,8 @@ public class Arquivo<T extends Registro>{
             arquivo.seek(0);
             arquivo.writeInt(0);
         }
+
+        indiceDireto = new HashExtensivel<>(ParIDEndereco.class.getConstructor(), 4, this.nomeArquivo+".d.idx", this.nomeArquivo+".c.idx");
     }// Construtor
 
     // ESTRUTURA DO ARQUIVO:
@@ -44,7 +49,7 @@ public class Arquivo<T extends Registro>{
      * @return O ID do objeto inserido.
      * @throws IOException Se ocorrer algum erro de I/O durante a gravacao do objeto no arquivo.
      */
-    protected int create(T objeto) throws IOException{
+    protected int create(T objeto) throws Exception{
         arquivo.seek(0);
         int proximoId = arquivo.readInt()+1;    
         arquivo.seek(0);
@@ -52,11 +57,14 @@ public class Arquivo<T extends Registro>{
         numRegistros++;
         objeto.setId(proximoId);
         arquivo.seek(arquivo.length());
+        long endereco = arquivo.getFilePointer();
 
         byte[] b = objeto.toByteArray();
         arquivo.writeByte(' ');
         arquivo.writeShort(b.length);
         arquivo.write(b);
+
+        indiceDireto.create(new ParIDEndereco(proximoId, endereco));
 
         return objeto.getId();
     }// create()
@@ -74,28 +82,27 @@ public class Arquivo<T extends Registro>{
         
         byte[] b;
         byte lapide;
-        T objeto = null;
+        T objeto;
         short tamRegistro;
-        boolean fim = false;
         arquivo.seek(CABECALHO);
 
-        while(arquivo.getFilePointer()<arquivo.length() || !fim){
-            lapide = arquivo.readByte();
+        ParIDEndereco pid = indiceDireto.read(id);
+        
+        if(pid != null) {
+            arquivo.seek(pid.getEndereco());
             objeto = construtor.newInstance();
+            lapide = arquivo.readByte();
             tamRegistro = arquivo.readShort();
             b = new byte[tamRegistro];
             arquivo.read(b);
 
             if(lapide == ' '){
-                
                 objeto.fromByteArray(b);
-
-                if(objeto.getId()==id) fim = true;
-                else objeto = null;
+                    if(objeto.getId() == id) return objeto;
             }
         } 
 
-        return objeto;  
+        return null;  
     }// read()
 
     /**
@@ -109,24 +116,22 @@ public class Arquivo<T extends Registro>{
     protected boolean update(T novoObjeto) throws Exception{
         byte[] b;
         byte lapide;
-        long endereco;
         T objeto;
         short tamRegistro;
-        boolean fim = false;
-        arquivo.seek(CABECALHO);
+        
+        ParIDEndereco pie = indiceDireto.read(novoObjeto.getId());
 
         /* quando o update atualizar o status de um objeto para concluido, 
         ele deve atualizar a data de conclusao pro momento do update */
-
-        while(arquivo.getFilePointer() < arquivo.length() && !fim){
+        if(pie!=null){
+            arquivo.seek(pie.getEndereco());
             objeto = construtor.newInstance();
-            endereco = arquivo.getFilePointer();
             lapide = arquivo.readByte();
-            tamRegistro = arquivo.readShort();
-            b = new byte[tamRegistro];
-            arquivo.read(b);
 
             if(lapide == ' '){
+                tamRegistro = arquivo.readShort();
+                b = new byte[tamRegistro];
+                arquivo.read(b);
                 objeto.fromByteArray(b);
                 
                 if(objeto.getId() == novoObjeto.getId()){
@@ -134,23 +139,24 @@ public class Arquivo<T extends Registro>{
                     short tamNovoRegistro = (short) bb.length;
 
                     if(tamNovoRegistro <= tamRegistro){
-                        arquivo.seek(endereco+3);
+                        arquivo.seek(pie.getEndereco()+3);
                         arquivo.write(bb);
                     }
                     else{
-                        arquivo.seek(endereco);
+                        arquivo.seek(pie.getEndereco());
                         arquivo.writeByte('*');
-
                         arquivo.seek(arquivo.length());
+                        long novoEndereco = arquivo.getFilePointer();
                         arquivo.writeByte(' ');
                         arquivo.writeShort(tamNovoRegistro);
                         arquivo.write(bb);
+                        indiceDireto.update(new ParIDEndereco(objeto.getId(), novoEndereco));
                     }
-                    fim = true;
+                    return true;
                 }
             }   
         }
-        return fim;
+        return false;
     }// update
 
 
@@ -164,15 +170,17 @@ public class Arquivo<T extends Registro>{
     protected boolean delete(int id) throws Exception{
         if(id <= 0 || id > numRegistros) throw new Exception("Id invalido para leitura: " + id);
 
+        boolean fim = false;
+        
         byte[] b;
         byte lapide;
         Long endereco;
         T objeto;
-        boolean fim=false;
         short tamRegistro;
+        
         arquivo.seek(CABECALHO);
 
-        while(arquivo.getFilePointer()<arquivo.length() || !fim){
+        while(arquivo.getFilePointer() < arquivo.length() || !fim){
             endereco = arquivo.getFilePointer();
             lapide = arquivo.readByte();
             objeto = construtor.newInstance();
@@ -180,11 +188,11 @@ public class Arquivo<T extends Registro>{
             b = new byte[tamRegistro];
             arquivo.read(b);
 
-            if(lapide==' '){
+            if(lapide == ' '){
                 objeto.fromByteArray(b);
-                if(objeto.getId()==id){
+                if(objeto.getId() == id){
                     arquivo.seek(endereco);
-                    arquivo.writeByte('*');
+                    arquivo.write('*');
                     fim = true; 
                 }
             }
