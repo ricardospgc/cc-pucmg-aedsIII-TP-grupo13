@@ -58,7 +58,12 @@ public class Tarefa implements Registro {
     public void setDataConclusao(LocalDateTime d){ this.dataConclusao = d; }
     public LocalDateTime getDataConclusao(){ return this.dataConclusao; }
     
-    public void setStatus(Status s){ this.status = s; }
+    public void setStatus(Status s){
+         this.status = s;
+         // atualiza a data de conclusao quando o status mudar para CONCLUIDO
+         if (s == Status.CONCLUIDO) 
+            this.dataConclusao = LocalDateTime.now().plusMinutes(1);
+    }
     public Status getStatus(){ return this.status; }
     
     public void setPrioridade(Prioridade p){ this.prioridade = p; }
