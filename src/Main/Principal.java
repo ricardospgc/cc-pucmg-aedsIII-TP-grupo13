@@ -1,6 +1,9 @@
+package Main;
 
+import Entidades.Tarefa;
 import Enums.Prioridade;
 import Enums.Status;
+import File.Arquivo;
 
 public class Principal {
 

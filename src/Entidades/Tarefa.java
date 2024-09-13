@@ -1,5 +1,8 @@
+package Entidades;
 import Enums.Prioridade;
 import Enums.Status;
+import Interface.Registro;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;

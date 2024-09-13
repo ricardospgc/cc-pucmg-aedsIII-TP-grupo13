@@ -1,4 +1,4 @@
-package Hash;
+package File;
 
 import java.io.IOException;
 

@@ -1,6 +1,6 @@
+package File;
 
-import Hash.HashExtensivel;
-import Hash.ParIDEndereco;
+import Interface.Registro;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -67,7 +67,7 @@ public class Arquivo<T extends Registro> {
      * @throws IOException Se ocorrer algum erro de I/O durante a gravacao do
      * objeto no arquivo.
      */
-    protected int create(T objeto) throws Exception {
+    public int create(T objeto) throws Exception {
         arquivo.seek(0);
         int proximoId = arquivo.readInt() + 1;
         arquivo.seek(0);
@@ -94,7 +94,7 @@ public class Arquivo<T extends Registro> {
      * @return O objeto correspondente ao ID, ou null se nao encontrado.
      * @throws IOException Se ocorrer um erro de I/O durante a leitura.
      */
-    protected T read(int id) throws Exception {
+    public T read(int id) throws Exception {
         if (id <= 0 || id > numRegistros) {
             throw new Exception("Id invalido para leitura: " + id);
         }
@@ -134,7 +134,7 @@ public class Arquivo<T extends Registro> {
      * @return boolean indicando se foi ou nao atualizado.
      * @throws IOException Se ocorrer um erro de I/O durante a atualizacao.
      */
-    protected boolean update(T novoObjeto) throws Exception {
+    public boolean update(T novoObjeto) throws Exception {
         byte[] b;
         byte lapide;
         T objeto;
@@ -187,7 +187,7 @@ public class Arquivo<T extends Registro> {
      * @throws IOException Se ocorrer um erro de I/O durante o processo de
      * delete.
      */
-    protected boolean delete(int id) throws Exception {
+    public boolean delete(int id) throws Exception {
         if (id <= 0 || id > numRegistros) {
             throw new Exception("Id invalido para leitura: " + id);
         }

@@ -1,4 +1,4 @@
-package Hash;
+package File;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
