@@ -15,14 +15,43 @@ Basicamente, vocês devem responder à seguinte pergunta: O que o trabalho de vo
 
 > O nosso trabalho implementa um CRUD genérico que armazena os dados em um arquivo de base de dados, com pesquisa através de hash extensível de índice direto.
 
-> O CRUD realiza as 4 operações (inclusão, leitura, atualização e remoção) de forma genérica, ou seja, independente da entidade. Nesse trabalho, a entidade escolhida foram Tarefas, que possuem como atributos Id (somente para operações e inalterável), Nome, Data de Criação e Conclusão, Status e Prioridade.
+> O CRUD realiza as 4 operações (inclusão, leitura, atualização e remoção) de forma genérica, podendo manipular qualquer entidade que implemente a interface Registro. Nesse trabalho, a entidade escolhida foram Tarefas, que possuem como atributos Id (somente para operações e inalterável), Nome, Data de Criação e Conclusão, Status e Prioridade.
 
 > O arquivo de base de dados possui um cabeçalho que indica a quantidade de registros armazenados. Cada registro possui um byte de lápide, indicando se é válido ou foi removido, um short indicando o seu tamanho e o vetor de bytes que descrevem a entidade.
 
 > A hash extensível direta relaciona o Id da entidade com o endereço do registro correspondente na base de dados, deixando mais eficiente operações de pesquisa.
 
 ### Descrição das Classes e Métodos
-"Descrevam todas as classes criadas e os seus métodos"
+
+### Classes:
+- #### Principal
+> 
+
+- #### Arquivo
+>
+
+- #### HashExtensivel
+>
+
+- #### ParIDEndereco
+>
+
+- #### Tarefa
+>
+
+### Interfaces
+- #### Registro
+>
+
+- #### RegistroHashExtensivel
+>
+
+### Enums
+- #### Prioridade
+>
+
+- #### Status
+>
 
 ### Experiência de Desenvolvimento
 "Finalmente, relatem um pouco a experiência de vocês, explicando questões como: Vocês implementaram todos os requisitos? Houve alguma operação mais difícil? 
