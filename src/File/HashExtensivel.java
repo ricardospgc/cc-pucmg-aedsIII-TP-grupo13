@@ -30,6 +30,9 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
         short quantidade; // quantidade de elementos presentes no cesto
         ArrayList<T> elementos; // sequência de elementos armazenados
 
+        /*
+         * Construtores de Cesto
+         */
         public Cesto(Constructor<T> ct, int qtdmax) throws Exception {
             this(ct, qtdmax, 0);
         }
@@ -138,14 +141,17 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
                 return false;
         }
 
+        //Verifica se há elementos
         public boolean empty() {
             return quantidade == 0;
         }
 
+        //Verifica se está cheio
         public boolean full() {
             return quantidade == quantidadeMaxima;
         }
 
+        //Retorna uma String Contendo as informações do Cesto
         @Override
         public String toString() {
             String s = "Profundidade Local: " + profundidadeLocal + "\nQuantidade: " + quantidade + "\n| ";
@@ -161,6 +167,7 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
             return s;
         }
 
+        //Retorna o tamanho do Cesto em Bytes
         public int size() {
             return bytesPorCesto;
         }
@@ -171,12 +178,14 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
         byte profundidadeGlobal;
         long[] enderecos;
 
+        //Construtor
         public Diretorio() {
             profundidadeGlobal = 0;
             enderecos = new long[1];
             enderecos[0] = 0;
         }
 
+        //Função que atualiza o Endereço
         public boolean atualizaEndereco(int p, long e) {
             if (p > Math.pow(2, profundidadeGlobal))
                 return false;
@@ -210,6 +219,7 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
             }
         }
 
+        //Retorna uma String que contém as informações do Diretorio
         @Override
         public String toString() {
             String s = "\nProfundidade global: " + profundidadeGlobal;
@@ -222,6 +232,7 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
             return s;
         }
 
+        //Retorna o endereço, de acordo com um int
         protected long endereco(int p) {
             if (p > Math.pow(2, profundidadeGlobal))
                 return -1;
@@ -362,6 +373,7 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
 
     }
 
+    //Função que faz a leitura de registros de acordo com uma chave
     public T read(int chave) throws Exception {
 
         // Carrega o diretório
@@ -385,6 +397,7 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
         return c.read(chave);
     }
 
+    //Atualiza um Registro
     public boolean update(T elem) throws Exception {
 
         // Carrega o diretório
@@ -416,6 +429,7 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
 
     }
 
+    //Função que deleta um Registro atraves da sua chave(int)
     public boolean delete(int chave) throws Exception {
 
         // Carrega o diretório
@@ -446,6 +460,7 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
         return true;
     }
 
+    //Printa as informações de Cesto e Diretório
     public void print() {
         try {
             byte[] bd = new byte[(int) arqDiretorio.length()];
