@@ -31,9 +31,9 @@ A classe `Principal` gerencia todo o fluxo do programa. Ela possui apenas o mét
 
 ---
 
-### Arquivo<T extends Registro>
+### Arquivo
 
-A classe `Arquivo<T extends Registro>` gerencia a manipulação de objetos genéricos `T` (que devem estender `Registro`) em um arquivo de forma persistente. Ela é responsável por operações CRUD (Create, Read, Update, Delete) e utiliza uma estrutura de índice para acesso eficiente.
+A classe `Arquivo` gerencia a manipulação de objetos genéricos `T` (que devem estender `Registro`) em um arquivo. Ela é responsável por operações CRUD (Create, Read, Update, Delete) e utiliza uma estrutura de índice para acesso eficiente.
 
 #### Componentes da Classe
 
@@ -47,6 +47,8 @@ A classe `Arquivo<T extends Registro>` gerencia a manipulação de objetos gené
    - **`public Arquivo(Constructor<T> construtor, String nomeArquivo)`**: Inicializa o arquivo, recria o diretório de armazenamento, e prepara o índice para o gerenciamento de objetos. Se o diretório "BaseDeDados" já existir, ele é deletado e recriado.
 
 3. **Métodos**
+   - **`private void deleteDirectory(File directory)`**: Remove um diretório e seu conteúdo de forma recursiva.
+     
    - **`public int create(T objeto) throws Exception`**: Adiciona um novo objeto ao arquivo. Atualiza o ID do objeto, escreve o objeto no arquivo, e adiciona uma entrada no índice para mapeamento de ID para endereço no arquivo. Retorna o ID atribuído ao objeto.
 
    - **`public T read(int id) throws Exception`**: Lê um objeto do arquivo com base no seu ID. Utiliza o índice para encontrar o endereço do objeto no arquivo e retorna o objeto correspondente, ou `null` se não encontrado.
@@ -54,9 +56,6 @@ A classe `Arquivo<T extends Registro>` gerencia a manipulação de objetos gené
    - **`public boolean update(T novoObjeto) throws Exception`**: Atualiza um objeto existente no arquivo. Se o novo objeto tiver um tamanho maior, marca o antigo como excluído e adiciona o novo objeto ao final do arquivo, atualizando o índice.
 
    - **`public boolean delete(int id) throws Exception`**: Marca um objeto como excluído no arquivo com base no seu ID. A exclusão é feita marcando o registro com um caractere de lapide ('*').
-
-4. **Método Auxiliar**
-   - **`private void deleteDirectory(File directory)`**: Remove um diretório e seu conteúdo de forma recursiva.
 
 5. **Estrutura do Arquivo**
    - **Cabeçalho**: Contém um inteiro que representa o número de registros (o cabeçalho é de 4 bytes).
@@ -69,8 +68,8 @@ A classe utiliza um índice de hash extensível (`HashExtensivel<ParIDEndereco>`
 
 ---
 
-### HashExtensivel<T extends RegistroHashExtensivel<T>>
-A classe `HashExtensivel<T extends RegistroHashExtensivel<T>>` implementa uma estrutura de hash extensível para gerenciamento de registros em arquivos. A estrutura é projetada para armazenar e recuperar registros de forma eficiente usando uma combinação de diretório e cestos (ou buckets) que podem se expandir dinamicamente conforme necessário.
+### HashExtensivel
+A classe `HashExtensivel<T extends RegistroHashExtensivel<T>>` implementa uma estrutura de hash extensível para gerenciamento de registros em arquivos. A estrutura é projetada para armazenar e recuperar registros e usando diretórios e cestos que podem se expandir dinamicamente conforme necessário.
 
 #### Componentes da Classe
 
@@ -207,7 +206,7 @@ A classe `Tarefa` representa uma tarefa com atributos relacionados ao gerenciame
 
 ### Interface Registro
 
-A interface `Registro` define os métodos obrigatórios para todos os registros que precisam ser persistidos e recuperados em um formato binário.
+A interface `Registro` define os métodos obrigatórios para todos os registros que serão armazenados em memória secundária e manipulados pelo nosso CRUD.
 
 #### Métodos
 - **`public void setId(int i)`**: Define o identificador único para o registro.
@@ -267,7 +266,7 @@ A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. 
 
 > A nossa experiência de desenvolvimento foi bem positiva, sem grandes complicações. Todos os requisitos foram implementados corretamente, sendo a implementação da hash extensível o ponto de maior dificuldade. Entretanto, com o apoio dos materiais e esforço do grupo, conseguimos alcançar os resultados.
 
-> Para facilitar a cooperação, usamos muito a extensão Live Share do Visual Studio Code, que permite aos participantes acompanharem as mudanças em tempo real.
+> Para facilitar a cooperação, usamos muito a extensão Live Share do Visual Studio Code, que permite aos participantes acompanharem as mudanças em tempo real. Com isso, discutimos as dificuldades e diferentes estratégias.
 
 ---
 
