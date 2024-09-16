@@ -1,5 +1,5 @@
 # cc-pucmg-aedsIII-TP-grupo13
-Esse é o repositório do Grupo 13 para os Trabalhos Práticos da disciplina de Algoritmos e Estruturas de Dados da PUC Minas, realizado no segundo semestre de 2024.
+Esse é o repositório do Grupo 13 para os Trabalhos Práticos da disciplina de Algoritmos e Estruturas de Dados III da PUC Minas, realizado no segundo semestre de 2024.
 
 Integrantes:
   - Ricardo Soares Pereira da Gama Cerqueira  - Matrícula: 803833
