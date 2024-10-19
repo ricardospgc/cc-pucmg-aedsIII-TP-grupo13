@@ -24,7 +24,7 @@ public class MenuCategorias extends Principal {
         } 
     } 
 
-    protected static void opcoes_menu() {
+    protected static void opcoesMenu() {
         System.out.println("\nAEDs-III 1.0           "
         +"\n-------------------------"
         +"\n> Início > Categorias    "
@@ -34,14 +34,16 @@ public class MenuCategorias extends Principal {
         +"\n4 - Excluir              "
         +"\n0 - Voltar               "
         +"\nOpção: ");
-    } // end opcoes_menu ()
+    } 
 
-    protected static void executar_opcao(int opcao) {
+    protected static void executaOpcao(int opcao) {
+        boolean result = false;
         switch(opcao) {
             case 0:
                 break;
             case 1:
-                buscaCategoria();
+                result = buscaCategoria();
+                System.out.println((result)? "Categoria encontrada!" : "Categoria não encontrada!");
                 break;
             case 2:
                 incluiCategoria();
@@ -91,6 +93,19 @@ public class MenuCategorias extends Principal {
     public static boolean buscaCategoria() {
         boolean result = false;
         System.out.println( "\nBuscar categoria:" );
+        System.out.print("ID: ");
+        String nome = (sc.nextLine());
+        if(nome.getBytes().length < 0){
+            result = false;
+            System.out.println("ID menor que 0 inválido!");
+        } 
+        else {
+            try {
+                System.out.println(arqCategorias.read(nome).nome);
+            } catch (Exception e) { 
+                System.out.println("Erro na busca: " + e.getMessage());
+            }
+        }
         return result;
     } 
 

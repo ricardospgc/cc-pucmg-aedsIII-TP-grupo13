@@ -5,7 +5,7 @@ import Enums.Prioridade;
 import Enums.Status;
 import File.ArquivoCategoria;
 import File.ArquivoTarefa;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -65,11 +65,11 @@ public class MenuTarefas extends Principal{
         } 
     } 
 
-    public static LocalDateTime formatarData(String dataStr) {
+    public static LocalDate formatarData(String dataStr) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDateTime data = null;
+        LocalDate data = null;
         try {
-            data = LocalDateTime.parse(dataStr, formatter);
+            data = LocalDate.parse(dataStr, formatter);
         } catch(DateTimeParseException e) {
             System.out.println("\nFormato inválido. Por favor, use o formato dd/MM/yyyy.");
         }
@@ -113,9 +113,10 @@ public class MenuTarefas extends Principal{
             System.out.print("Nome: ");
             String nome = sc.nextLine();
 
-            System.out.print("\nData de Criacao: ");
+            System.out.println("\nData de Criacao (dd/MM/yyyy) - 0 para data atual");
+            System.out.print(": ");
             String dc1 = sc.nextLine();
-            LocalDateTime dataCriacao = formatarData(dc1);
+            LocalDate dataCriacao = (dc1.equals("0"))? LocalDate.now() : formatarData(dc1);
 
             listaStatus();
             byte statusB = (sc.nextByte());
@@ -126,7 +127,7 @@ public class MenuTarefas extends Principal{
             Prioridade prioridade = Prioridade.fromByte(prioridadeB);
 
             listaCategorias();
-            int idCategoria = Integer.parseInt(sc.nextLine());
+            int idCategoria = /*Integer.parseInt(sc.nextLine());*/ 0;
 
             tarefa = new Tarefa(nome, dataCriacao, status, prioridade, idCategoria);
         } catch (Exception e) {
@@ -140,6 +141,7 @@ public class MenuTarefas extends Principal{
         try{
             Tarefa novaTarefa = leTarefa();
             if (novaTarefa != null) {
+                System.out.println(novaTarefa);
                 System.out.println("\nConfirma inclusao? (S/N)");
                 char resp = sc.nextLine().charAt(0);
                 if(resp == 'S' || resp == 's') {
@@ -164,7 +166,7 @@ public class MenuTarefas extends Principal{
 
         System.out.print("ID: ");
         int id = Integer.parseInt(sc.nextLine());
-        if(id > 0){
+        if(id < 0){
             result = false;
             System.out.println("ID menor que 0 inválido!");
         } 
@@ -181,6 +183,8 @@ public class MenuTarefas extends Principal{
     public static boolean alteraTarefa() {
         boolean result = false;
         System.out.println("\nAlterar Tarefa:");
+
+
         return result;
     } 
 

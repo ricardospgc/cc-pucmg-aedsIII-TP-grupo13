@@ -8,7 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.*;
 
@@ -16,7 +16,7 @@ public class Tarefa implements Registro {
 
     private int id, idCategoria;
     private String nome;
-    private LocalDateTime dataCriacao, dataConclusao;
+    private LocalDate dataCriacao, dataConclusao;
     private Status status;
     private Prioridade prioridade;
 
@@ -29,16 +29,20 @@ public class Tarefa implements Registro {
     }
 
     public Tarefa(String nome, Status status, Prioridade prioridade){
-        this(nome, LocalDateTime.now(), status, prioridade, -1);
+        this(nome, status, prioridade, -1);
     }
 
-    public Tarefa(String nome, LocalDateTime dataCriacao, Status status, Prioridade prioridade, int idCategoria){
+    public Tarefa(String nome, Status status, Prioridade prioridade, int idCategoria){
+        this(nome, LocalDate.now(), status, prioridade, idCategoria);
+    }
+
+    public Tarefa(String nome, LocalDate dataCriacao, Status status, Prioridade prioridade, int idCategoria){
         this.nome = nome;
         this.dataCriacao = dataCriacao;
         if(status == Status.CONCLUIDO) 
             this.dataConclusao = dataCriacao;
         else // inicializa com a data 0, caso nao concluido
-            this.dataConclusao = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+            this.dataConclusao = LocalDate.of(1, 1, 1970);
         this.status = status;
         this.prioridade = prioridade;
         this.idCategoria = idCategoria;
@@ -55,17 +59,17 @@ public class Tarefa implements Registro {
     public void setNome(String nome){ this.nome = nome;}
     public String getNome(){ return this.nome; }
 
-    public void setDataCriacao(LocalDateTime d){ this.dataCriacao = d; }
-    public LocalDateTime getDataCriacao(){ return this.dataCriacao; }
+    public void setDataCriacao(LocalDate d){ this.dataCriacao = d; }
+    public LocalDate getDataCriacao(){ return this.dataCriacao; }
     
-    public void setDataConclusao(LocalDateTime d){ this.dataConclusao = d; }
-    public LocalDateTime getDataConclusao(){ return this.dataConclusao; }
+    public void setDataConclusao(LocalDate d){ this.dataConclusao = d; }
+    public LocalDate getDataConclusao(){ return this.dataConclusao; }
     
     public void setStatus(Status s){
          this.status = s;
          // atualiza a data de conclusao quando o status mudar para CONCLUIDO
          if (s == Status.CONCLUIDO) 
-            this.dataConclusao = LocalDateTime.now().plusMinutes(1);
+            this.dataConclusao = LocalDate.now();
     }
     public Status getStatus(){ return this.status; }
     
@@ -75,8 +79,8 @@ public class Tarefa implements Registro {
     public void setIdCategoria(int idCategoria){ this.idCategoria = idCategoria; }
     public int getIdCategoria(){ return this.idCategoria; }
     
-    // Formata LocalDateTime
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss");
+    // Formata LocalDate
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
      * Metodo responsavel por retornar uma String que descreve um registro
@@ -115,8 +119,8 @@ public class Tarefa implements Registro {
 
         dos.writeInt(this.id);
         dos.writeUTF(this.nome);
-        dos.writeLong(LocalDateTimeToLong(this.dataCriacao));
-        dos.writeLong(LocalDateTimeToLong(this.dataConclusao));
+        dos.writeLong(LocalDateToLong(this.dataCriacao));
+        dos.writeLong(LocalDateToLong(this.dataConclusao));
         dos.writeByte(status.getValue());
         dos.writeByte(prioridade.getValue());
         dos.writeInt(idCategoria);
@@ -137,8 +141,8 @@ public class Tarefa implements Registro {
         
         this.id = dis.readInt();
         this.nome = dis.readUTF();
-        this.dataCriacao = LongToLocalDateTime(dis.readLong());
-        this.dataConclusao = LongToLocalDateTime(dis.readLong());
+        this.dataCriacao = LongToLocalDate(dis.readLong());
+        this.dataConclusao = LongToLocalDate(dis.readLong());
         
         byte statusByte = dis.readByte();
         this.status = Status.fromByte(statusByte);
@@ -151,22 +155,22 @@ public class Tarefa implements Registro {
     }
 
     /**
-     * Metodo responsavel por transformar um LocalDateTime em long
-     * @param LocalDateTime
+     * Metodo responsavel por transformar um LocalDate em long
+     * @param LocalDate
      * @return long
      */
-    public long LocalDateTimeToLong(LocalDateTime d){
-        return d.toInstant(ZoneOffset.UTC).toEpochMilli();
+    public long LocalDateToLong(LocalDate d){
+        return d.toEpochDay();
     }
     
     /**
-     * Transformar um long em um LocalDateTime
+     * Transformar um long em um LocalDate
      * 
      * @param long
-     * @return LocalDateTime
+     * @return LocalDate
      */
-    public LocalDateTime LongToLocalDateTime(long d){
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(d), ZoneOffset.UTC);
+    public LocalDate LongToLocalDate(long d){
+        return LocalDate.ofInstant(Instant.ofEpochMilli(d), ZoneOffset.UTC);
     }
 
 }// class Tarefa

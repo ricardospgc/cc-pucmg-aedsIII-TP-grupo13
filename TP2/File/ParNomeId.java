@@ -53,7 +53,7 @@ public class ParNomeId implements RegistroArvoreBMais<ParNomeId> {
     } 
 
     public int compareTo(ParNomeId p) {
-        return strnormalize(this.nome).compareTo( strnormalize(p.nome) );
+        return strnormalize(this.nome).compareTo(strnormalize(p.nome));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ParNomeId implements RegistroArvoreBMais<ParNomeId> {
     }
     @Override
     public String toString() {
-        return "("+this.id + ";" + this.nome+")";
+        return "("+this.id + " , " + this.nome+")";
     }
     @Override
     public byte[] toByteArray() throws IOException {
