@@ -119,17 +119,18 @@ public class MenuTarefas extends Principal{
             LocalDate dataCriacao = (dc1.equals("0"))? LocalDate.now() : formatarData(dc1);
 
             listaStatus();
-            byte statusB = (sc.nextByte());
+            byte statusB = Byte.parseByte(sc.nextLine());
             Status status = Status.fromByte(statusB);
 
             listaPrioridades();
-            byte prioridadeB = sc.nextByte();
+            byte prioridadeB = Byte.parseByte(sc.nextLine());
             Prioridade prioridade = Prioridade.fromByte(prioridadeB);
 
             listaCategorias();
-            int idCategoria = /*Integer.parseInt(sc.nextLine());*/ 0;
+            //int idCategoria = Integer.parseInt(sc.nextLine());
+            MenuCategorias.buscaCategoria();
 
-            tarefa = new Tarefa(nome, dataCriacao, status, prioridade, idCategoria);
+            //tarefa = new Tarefa(nome, dataCriacao, status, prioridade, 0);
         } catch (Exception e) {
             System.out.println("\nErro na leitura!");
         } 

@@ -7,9 +7,9 @@ import java.io.IOException;
 
 public class ParIDEndereco implements RegistroHashExtensivel<ParIDEndereco> {
     
-    private int id;   // chave
-    private long endereco;    // valor
-    private final short TAMANHO = 12;  // tamanho em bytes
+    private int id;  
+    private long endereco;    
+    private final short TAMANHO = 12;  
 
     /*
      * Construtores

@@ -1,13 +1,13 @@
 package Entidades;
 
-import java.io.IOException;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import Interface.Registro;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class Categoria implements Registro {
+public class Categoria implements Registro, Comparable<Categoria> {
 
     public int id;
     public String nome;
@@ -59,5 +59,10 @@ public class Categoria implements Registro {
         DataInputStream dis = new DataInputStream(bais);
         this.id = dis.readInt();
         this.nome = dis.readUTF();
+    }
+
+    @Override
+    public int compareTo(Categoria other) {
+        return this.nome.compareTo(other.nome);
     }
 }

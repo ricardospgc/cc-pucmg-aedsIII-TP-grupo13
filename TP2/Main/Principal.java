@@ -2,6 +2,12 @@ package Main;
 
 import java.util.Scanner;
 
+/*
+Na pasta ../TP2/
+Compilar: javac -d NULL File/*.java Entidades/*.java Enums/*.java Interface/*.java Main/*.java
+Rodar: java -cp NULL Main.Principal
+*/
+
 public class Principal {
     protected static Scanner sc = new Scanner(System.in);
 

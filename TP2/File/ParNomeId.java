@@ -41,7 +41,7 @@ public class ParNomeId implements RegistroArvoreBMais<ParNomeId> {
         try {
             p = new ParNomeId(this.nome, this.id);
         }
-        catch ( Exception e ) {
+        catch(Exception e) {
         } 
         return p;
     } 
