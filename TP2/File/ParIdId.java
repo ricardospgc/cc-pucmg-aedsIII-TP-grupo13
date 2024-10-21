@@ -34,10 +34,12 @@ public class ParIdId implements RegistroArvoreBMais<ParIdId> {
         return idTarefa;
     } 
 
+    @Override
     public short size() {
         return this.TAMANHO;
     } 
 
+    @Override
     public String toString() {
         return  String.format("%3d", this.idCategoria) + ";" + String.format("%3d", this.idTarefa);
     } 
@@ -53,11 +55,13 @@ public class ParIdId implements RegistroArvoreBMais<ParIdId> {
         return clone;
     } 
 
+    @Override
     public int compareTo(ParIdId obj) {
         if(this.idCategoria != obj.idCategoria) return this.idCategoria - obj.idCategoria;
-        else return this.idTarefa - obj.idTarefa;
+        else return this.idTarefa == -1 ? 0 : this.idTarefa - obj.idTarefa;
     }
 
+    @Override
     public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
@@ -66,6 +70,7 @@ public class ParIdId implements RegistroArvoreBMais<ParIdId> {
         return (baos.toByteArray());
     }
 
+    @Override
     public void fromByteArray(byte[] ba) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);

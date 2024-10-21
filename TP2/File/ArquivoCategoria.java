@@ -7,7 +7,6 @@ import java.util.List;
 
 public class ArquivoCategoria extends Arquivo<Categoria> {
     ArvoreBMais<ParNomeId> indiceIndiretoNome;
-    Arquivo<Categoria> arqTarefa;
 
     public ArquivoCategoria() throws Exception {
         super(Categoria.class.getConstructor(),"Categorias.db");
@@ -24,6 +23,13 @@ public class ArquivoCategoria extends Arquivo<Categoria> {
 
     public Categoria read(String nome) throws Exception {
         ArrayList<ParNomeId> picn = indiceIndiretoNome.read(new ParNomeId(nome, -1));
+        if(picn.isEmpty()) {
+            System.err.println("ARRAYLIST VAZIOOO");
+            return null;
+        }
+        for(ParNomeId p : picn) {
+            System.out.println("( "+p.getNome()+", "+p.getId()+" )");
+        }
         return super.read(picn.get(0).getId());
     } 
     
@@ -100,6 +106,7 @@ public class ArquivoCategoria extends Arquivo<Categoria> {
         return false;
     }
 
-
-
+    public void printCategorias() throws Exception {
+        indiceIndiretoNome.print();
+    }
 } 

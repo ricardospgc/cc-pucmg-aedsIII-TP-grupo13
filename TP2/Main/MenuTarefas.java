@@ -12,11 +12,11 @@ import java.time.format.DateTimeParseException;
 
 public class MenuTarefas extends Principal{
     private static ArquivoTarefa arqTarefas;
-    private static ArquivoCategoria arqCategorias;
+    private static ArquivoCategoria arqCategoria;
 
     public MenuTarefas() throws Exception {
         arqTarefas = new ArquivoTarefa();
-        arqCategorias = new ArquivoCategoria();
+        arqCategoria = new ArquivoCategoria();
     } 
 
     public void menu() {
@@ -78,9 +78,9 @@ public class MenuTarefas extends Principal{
 
     private static void listaStatus() {
         System.out.println("\nEscolha o status:"
-        +"\n1 - Pendente" 
-        +"\n2 - Em Progresso" 
-        +"\n3 - Concluída" 
+        +"\n0 - Pendente" 
+        +"\n1 - Em Progresso" 
+        +"\n2 - Concluída" 
         +"\nStatus: ");
     } 
 
@@ -119,17 +119,28 @@ public class MenuTarefas extends Principal{
             LocalDate dataCriacao = (dc1.equals("0"))? LocalDate.now() : formatarData(dc1);
 
             listaStatus();
-            byte statusB = Byte.parseByte(sc.nextLine());
-            Status status = Status.fromByte(statusB);
-
+            try {
+                byte statusB = Byte.parseByte(sc.nextLine());
+                System.err.println(statusB);
+                Status status = Status.fromByte(statusB);
+            } catch (NumberFormatException e) {
+                System.err.println("Erro na leitura do status!");
+            }
+    
             listaPrioridades();
-            byte prioridadeB = Byte.parseByte(sc.nextLine());
-            Prioridade prioridade = Prioridade.fromByte(prioridadeB);
+            try {
+                byte prioridadeB = Byte.parseByte(sc.nextLine());
+                Prioridade prioridade = Prioridade.fromByte(prioridadeB);
+            } catch (NumberFormatException e) {
+                System.err.println("Erro na leitura da prioridade!");
+            }
+            
 
+            arqCategoria.printCategorias();
             listaCategorias();
-            //int idCategoria = Integer.parseInt(sc.nextLine());
+            int idCategoria = Integer.parseInt(sc.nextLine());
             MenuCategorias.buscaCategoria();
-
+            
             //tarefa = new Tarefa(nome, dataCriacao, status, prioridade, 0);
         } catch (Exception e) {
             System.out.println("\nErro na leitura!");

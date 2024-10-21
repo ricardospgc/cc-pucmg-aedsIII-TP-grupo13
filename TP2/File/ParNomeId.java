@@ -20,7 +20,7 @@ public class ParNomeId implements RegistroArvoreBMais<ParNomeId> {
 
     public ParNomeId(String nome, int id) throws Exception {
         this.id = id;
-        if (nome.getBytes().length <= 30) {
+        if (nome.getBytes().length < 30) {
             this.nome = nome;
         } else{
             throw new Exception("Nome extenso. Diminua o tamanho");
@@ -46,14 +46,14 @@ public class ParNomeId implements RegistroArvoreBMais<ParNomeId> {
         return p;
     } 
 
-    private static String strnormalize(String str) {
+    private static String transforma(String str) {
         String normalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(normalizedString).replaceAll("").toLowerCase();
     } 
 
     public int compareTo(ParNomeId p) {
-        return strnormalize(this.nome).compareTo(strnormalize(p.nome));
+        return transforma(this.nome).compareTo(transforma(p.nome));
     }
 
     @Override
@@ -68,10 +68,18 @@ public class ParNomeId implements RegistroArvoreBMais<ParNomeId> {
     public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
-        dos.writeUTF(this.nome);
-        for(int i = this.nome.length();i<TAMANHO-4;i++){
-            dos.writeByte(' ');
+        byte[] vb = new byte[30];
+        byte[] vbNome = this.nome.getBytes();
+        int i=0;
+        while(i<vbNome.length) {
+            vb[i] = vbNome[i];
+            i++;
         }
+        while(i<30) {
+            vb[i] = ' ';
+            i++;
+        }
+        dos.write(vb);
         dos.writeInt(this.id);
         return baos.toByteArray();
     }
@@ -79,7 +87,9 @@ public class ParNomeId implements RegistroArvoreBMais<ParNomeId> {
     public void fromByteArray(byte[] ba) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);
-        this.nome = dis.readUTF().trim();
+        byte[] vb = new byte[26];
+        dis.read(vb);
+        this.nome = (new String(vb)).trim();
         this.id = dis.readInt();
     }
 }

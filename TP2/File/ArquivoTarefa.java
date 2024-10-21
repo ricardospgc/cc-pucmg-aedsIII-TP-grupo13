@@ -19,15 +19,17 @@ public class ArquivoTarefa extends Arquivo<Tarefa> {
     @Override
     public int create(Tarefa c) throws Exception {
         int id = super.create(c);
-        indiceIndiretoIdCategoria.create(new ParIdId(c.getId(), id));
+        indiceIndiretoIdCategoria.create(new ParIdId(c.getIdCategoria(), c.getId()));
         return id;
     }
 
+    @Override
     public Tarefa read(int id) throws Exception {
         ArrayList<ParIdId> p = indiceIndiretoIdCategoria.read(new ParIdId(id, -1));
         return super.read(p.get(0).getIDTarefa());
     }
     
+    @Override
     public boolean delete(int id) throws Exception {
         boolean result = false;
         Tarefa obj = super.read(id);

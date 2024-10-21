@@ -92,7 +92,6 @@ public class MenuCategorias extends Principal {
     } 
 
     public static void buscaCategoria() {
-        boolean result = false;
         System.out.println( "\nBuscar categoria:" );
         System.out.print("Nome: ");
         String nome = (sc.nextLine());
@@ -102,9 +101,9 @@ public class MenuCategorias extends Principal {
         }
         else {
             try {
-                result = arqCategorias.buscarCategoriaNome(nome);
-                System.out.println((result) ? "Categoria encontrada!" : "Categoria não encontrada!");
-                //System.out.println(arqCategorias.read(nome).nome);
+                Categoria result = arqCategorias.read(nome);
+                System.out.println((result!=null) ? "Categoria encontrada!" : "Categoria não encontrada!");
+                System.out.println(result.nome);
             } catch (Exception e) { 
                 System.out.println("Erro na busca: " + e.getMessage());
             }
@@ -128,7 +127,7 @@ public class MenuCategorias extends Principal {
         try {
             List<Categoria> lista = arqCategorias.leTodasCategorias();
             for (Categoria c : lista) {
-                System.out.println(c);
+                System.out.println(c.nome);
             }
         } catch (Exception e) {
             System.out.println("Erro ao listar categorias: " + e.getMessage());
