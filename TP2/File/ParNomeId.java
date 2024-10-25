@@ -9,8 +9,8 @@ import java.text.Normalizer;
 import java.util.regex.Pattern;
 
 public class ParNomeId implements RegistroArvoreBMais<ParNomeId> {
-    private int id;
-    private String nome;
+    public int id;
+    public String nome;
     private final short TAMANHO = 34;
 
     public ParNomeId() {
@@ -25,14 +25,6 @@ public class ParNomeId implements RegistroArvoreBMais<ParNomeId> {
         } else{
             throw new Exception("Nome extenso. Diminua o tamanho");
         }
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getNome() {
-        return nome;                                 
     }
 
     @Override
@@ -52,6 +44,7 @@ public class ParNomeId implements RegistroArvoreBMais<ParNomeId> {
         return pattern.matcher(normalizedString).replaceAll("").toLowerCase();
     } 
 
+    @Override
     public int compareTo(ParNomeId p) {
         return transforma(this.nome).compareTo(transforma(p.nome));
     }

@@ -2,7 +2,6 @@ package Main;
 
 import Entidades.Categoria;
 import File.ArquivoCategoria;
-import java.util.List;
 
 public class MenuCategorias extends Principal {
     private static ArquivoCategoria arqCategorias;
@@ -13,7 +12,7 @@ public class MenuCategorias extends Principal {
 
     public void menu() {
         try{
-            int opcao = 0;
+            int opcao;
             do {
                 opcoesMenu();
                 opcao = leOpcao();
@@ -36,24 +35,21 @@ public class MenuCategorias extends Principal {
         +"\nOpção: ");
     } 
 
-    protected static void executaOpcao(int opcao) {
+    protected static void executaOpcao(int opcao) throws Exception {
         switch(opcao) {
             case 0:
                 break;
             case 1:
-                buscaCategoria();
+                arqCategorias.buscaCategorias();
                 break;
             case 2:
                 incluiCategoria();
                 break;
             case 3:
-                alteraCategoria();
+                arqCategorias.update();
                 break;
             case 4:
-                excluiCategoria();
-                break;
-            case 5:
-                listarCartegorias();
+                arqCategorias.delete();
                 break;
             
             default:
@@ -81,8 +77,8 @@ public class MenuCategorias extends Principal {
             if(resp == 'S' || resp == 's') {
                 try {
                     Categoria c = new Categoria(nome);
-                    arqCategorias.create(c);
-                    System.out.println("Categoria "+ nome +" criada!");
+                    int id = arqCategorias.create(c);
+                    System.out.println("Categoria "+id+"- "+ nome+" criada!");
                 } catch(Exception e) {
                     System.out.println("Erro! " + e.getMessage());
                 } 
@@ -90,48 +86,4 @@ public class MenuCategorias extends Principal {
         }
 
     } 
-
-    public static void buscaCategoria() {
-        System.out.println( "\nBuscar categoria:" );
-        System.out.print("Nome: ");
-        String nome = (sc.nextLine());
-
-        if (nome.isEmpty()) {
-            System.out.println("Nome inválido!");
-        }
-        else {
-            try {
-                Categoria result = arqCategorias.read(nome);
-                System.out.println((result!=null) ? "Categoria encontrada!" : "Categoria não encontrada!");
-                System.out.println(result.nome);
-            } catch (Exception e) { 
-                System.out.println("Erro na busca: " + e.getMessage());
-            }
-        }
-    } 
-
-    public static boolean alteraCategoria() {
-        boolean result = false;
-        System.out.println( "\nAlterar categoria:" );
-        return result;
-    } 
-
-    public static boolean excluiCategoria() {
-        boolean result = false;
-        System.out.println( "\nExcluir categoria:" );
-        return result;
-    }
-
-
-    public static void listarCartegorias(){
-        try {
-            List<Categoria> lista = arqCategorias.leTodasCategorias();
-            for (Categoria c : lista) {
-                System.out.println(c.nome);
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao listar categorias: " + e.getMessage());
-        }
-    }
-
 }

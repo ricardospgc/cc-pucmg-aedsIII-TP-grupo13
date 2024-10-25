@@ -24,6 +24,7 @@ public class Categoria implements Registro, Comparable<Categoria> {
         this.nome = n;
     }
 
+    @Override
     public void setId(int id) {
         this.id = id;
     }
@@ -32,6 +33,7 @@ public class Categoria implements Registro, Comparable<Categoria> {
         this.nome = nome;
     }
 
+    @Override
     public int getId() {
         return id;
     }
@@ -40,11 +42,13 @@ public class Categoria implements Registro, Comparable<Categoria> {
         return nome;
     }
 
+    @Override
     public String toString() {
         return "\nID..: " + this.id +
                "\nNome: " + this.nome;
     }
 
+    @Override
     public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
@@ -53,7 +57,7 @@ public class Categoria implements Registro, Comparable<Categoria> {
         return baos.toByteArray();
     }
 
-
+    @Override
     public void fromByteArray(byte[] b) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(b);
         DataInputStream dis = new DataInputStream(bais);
