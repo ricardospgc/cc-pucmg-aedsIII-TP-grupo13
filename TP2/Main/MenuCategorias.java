@@ -1,138 +1,181 @@
 package Main;
 
-import Entidades.Categoria;
-import File.ArquivoCategoria;
-import java.util.List;
+import Entidades.*;
+import File.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
-public class MenuCategorias extends Principal {
-    private static ArquivoCategoria arqCategorias;
+public class MenuCategorias {
 
-    public MenuCategorias () throws Exception {
-        arqCategorias = new ArquivoCategoria();
-    } 
+    ArquivoTarefa arqTarefa;
+    ArquivoCategoria arqCategoria;
+    private static Scanner sc = new Scanner(System.in);
+
+    public MenuCategorias() throws Exception {
+        arqTarefa = new ArquivoTarefa();
+        arqCategoria = new ArquivoCategoria();
+    }
 
     public void menu() {
-        try{
-            int opcao = 0;
-            do {
-                opcoesMenu();
-                opcao = leOpcao();
-                executaOpcao(opcao);
-            } while( opcao != 0 ); 
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        } 
-    } 
-
-    protected static void opcoesMenu() {
-        System.out.println("\nAEDs-III 1.0           "
-        +"\n-------------------------"
-        +"\n> Início > Categorias    "
-        +"\n1 - Buscar               "
-        +"\n2 - Incluir              "
-        +"\n3 - Alterar              "
-        +"\n4 - Excluir              "
-        +"\n0 - Voltar               "
-        +"\nOpção: ");
-    } 
-
-    protected static void executaOpcao(int opcao) {
-        switch(opcao) {
-            case 0:
-                break;
-            case 1:
-                buscaCategoria();
-                break;
-            case 2:
-                incluiCategoria();
-                break;
-            case 3:
-                alteraCategoria();
-                break;
-            case 4:
-                excluiCategoria();
-                break;
-            case 5:
-                listarCartegorias();
-                break;
-            
-            default:
-                System.out.println("Opção inválida!");
-                break;
-        } 
-    } 
-
-    public static void incluiCategoria() {
-        String  nome = "";
-        boolean dadosCompletos = false;
-        System.out.println("\nInclusão de categoria:");
+        int opcao;
         do {
-            System.out.print("\nNome da categoria (min. de 4 letras): ");
-            nome = sc.nextLine();
-            if( nome.length() >= 4 || nome.length() == 0 ) {
-                dadosCompletos = true;
-            } else {
-                System.err.println("O nome da categoria deve ter no mínimo 4 caracteres.");
-            } 
-        } while( dadosCompletos == false ); 
-        if( nome.length() > 0 ) {
-            System.out.println("Confirma a inclusao? (S/N)");
-            char resp = sc.nextLine().charAt(0);
-            if(resp == 'S' || resp == 's') {
-                try {
-                    Categoria c = new Categoria(nome);
-                    arqCategorias.create(c);
-                    System.out.println("Categoria "+ nome +" criada!");
-                } catch(Exception e) {
-                    System.out.println("Erro! " + e.getMessage());
-                } 
-            } 
-        }
+            System.out.println("\nAEDsIII");
+            System.out.println("-------");
+            System.out.println("- Inicio Categorias");
+            System.out.println("1 - Buscar");
+            System.out.println("2 - Incluir");
+            System.out.println("3 - Alterar");
+            System.out.println("4 - Excluir");
+            System.out.println("5 - Listar");
+            System.out.println("0 - Voltar");
 
-    } 
-
-    public static void buscaCategoria() {
-        boolean result = false;
-        System.out.println( "\nBuscar categoria:" );
-        System.out.print("Nome: ");
-        String nome = (sc.nextLine());
-
-        if (nome.isEmpty()) {
-            System.out.println("Nome inválido!");
-        }
-        else {
+            System.out.print("Opção: ");
             try {
-                result = arqCategorias.buscarCategoriaNome(nome);
-                System.out.println((result) ? "Categoria encontrada!" : "Categoria não encontrada!");
-                //System.out.println(arqCategorias.read(nome).nome);
-            } catch (Exception e) { 
-                System.out.println("Erro na busca: " + e.getMessage());
+                opcao = Integer.valueOf(sc.nextLine());
+            } catch (NumberFormatException e) {
+                opcao = -1;
             }
-        }
-    } 
 
-    public static boolean alteraCategoria() {
-        boolean result = false;
-        System.out.println( "\nAlterar categoria:" );
-        return result;
-    } 
+            switch (opcao) {
+                case 1:
+                    buscarCategoria();
+                    break;
+                case 2:
+                    incluirCategoria();
+                    break;
+                case 3:
+                    alterarCategoria();
+                    break;
+                case 4:
+                    excluirCategoria();
+                    break;
+                case 5:
+                    arqCategoria.list();
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Opcao invalida!");
+                    break;
+            }
 
-    public static boolean excluiCategoria() {
-        boolean result = false;
-        System.out.println( "\nExcluir categoria:" );
-        return result;
+        } while (opcao != 0);
     }
 
+    public void buscarCategoria() {
+        String nome;
 
-    public static void listarCartegorias(){
+        System.out.println("\nBuscar categoria");
+        System.out.print("\nNome da categoria: ");
+        nome = sc.nextLine();
+
+        if (nome.length() == 0) {
+            return;
+        }
         try {
-            List<Categoria> lista = arqCategorias.leTodasCategorias();
-            for (Categoria c : lista) {
-                System.out.println(c);
+            Categoria c = arqCategoria.read(nome);
+            System.out.println(c.toString());
+
+            int idCategoria = c.getId();
+            ArrayList<Tarefa> tarefas = arqTarefa.readAll(idCategoria);
+            for (Tarefa tmp : tarefas) {
+                System.out.println(tmp);
             }
         } catch (Exception e) {
-            System.out.println("Erro ao listar categorias: " + e.getMessage());
+            System.out.println("Categoria nao encontrada!");
         }
     }
 
+    public void incluirCategoria() {
+        String nome;
+        boolean dadosCompletos = false;
+
+        System.out.println("\nInclusao de categoria");
+        do {
+            System.out.print("\nNome da categoria (min. de 5 letras): ");
+            nome = sc.nextLine();
+            if (nome.length() >= 5 || nome.length() == 0) {
+                dadosCompletos = true;
+            } else {
+                System.err.println("O nome da categoria deve ter no mínimo 5 caracteres.");
+            }
+        } while (!dadosCompletos);
+
+        if (nome.length() == 0) {
+            return;
+        }
+        System.out.println("Confirma a inclusao da categoria? (S/N) ");
+        char resp = sc.nextLine().charAt(0);
+        if (resp == 'S' || resp == 's') {
+            try {
+                Categoria c = new Categoria(nome);
+                arqCategoria.create(c);
+                System.out.println("Categoria criada com sucesso.");
+            } catch (Exception e) {
+                System.err.println("Erro do sistema. Não foi possivel criar a categoria!");
+            }
+        }
+    }
+
+    public void alterarCategoria() {
+        String nome;
+
+        System.out.println("\nAlterar categoria");
+        System.out.print("\nNome da categoria (min. de 5 letras): ");
+        nome = sc.nextLine();
+
+        if (nome.length() == 0) {
+            return;
+        }
+        System.out.println("Confirma a alteracao da categoria? (S/N) ");
+        char resp = sc.nextLine().charAt(0);
+        if (resp == 'S' || resp == 's') {
+            try {
+                Categoria c = arqCategoria.read(nome);
+                System.out.println("Digite o novo nome da categoria: ");
+                nome = sc.nextLine();
+
+                c.setNome(nome);
+                arqCategoria.update(c);
+
+                System.out.println("Categoria atualizada com sucesso.");
+            } catch (Exception e) {
+                System.err.println("Erro do sistema. Nao foi possivel criar a categoria!");
+            }
+        }
+    }
+
+    public void excluirCategoria() {
+        String nome;
+
+        System.out.println("\nExcluir categoria: ");
+        nome = sc.nextLine();
+
+        if (nome.length() == 0) {
+            return;
+        }
+        try {
+            int idCategoria = arqCategoria.read(nome).getId();
+            if (!arqTarefa.readAll(idCategoria).isEmpty()) {
+                System.err.println("Nao eh possivel excluir, existem tarefas relacionadas");
+                return;
+            }
+        } catch (Exception e) {
+            System.err.println("Erro no sistema");
+        }
+
+        System.out.println("Confirma a exclusao da categoria? (S/N) ");
+        char resp = sc.nextLine().charAt(0);
+        if (resp == 'S' || resp == 's') {
+            try {
+                if (arqCategoria.delete(nome)) {
+                    System.out.println("Categoria excluida com sucesso.");
+                } else {
+                    System.out.println("Categoria inexistente");
+                }
+            } catch (Exception e) {
+                System.err.println("Erro do sistema. Nao foi possível excluir a categoria!");
+            }
+        }
+    }
 }

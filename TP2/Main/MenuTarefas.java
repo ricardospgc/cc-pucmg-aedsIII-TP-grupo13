@@ -1,198 +1,282 @@
 package Main;
 
-import Entidades.Tarefa;
+import Entidades.*;
 import Enums.Prioridade;
 import Enums.Status;
-import File.ArquivoCategoria;
-import File.ArquivoTarefa;
+import File.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
+public class MenuTarefas {
 
-public class MenuTarefas extends Principal{
-    private static ArquivoTarefa arqTarefas;
-    private static ArquivoCategoria arqCategorias;
+    ArquivoTarefa arqTarefa;
+    ArquivoCategoria arqCategoria;
+    private static Scanner sc = new Scanner(System.in);
 
     public MenuTarefas() throws Exception {
-        arqTarefas = new ArquivoTarefa();
-        arqCategorias = new ArquivoCategoria();
-    } 
+        arqTarefa = new ArquivoTarefa();
+        arqCategoria = new ArquivoCategoria();
+    }
 
     public void menu() {
+        int opcao;
+        do {
+            System.out.println("\nAEDsIII");
+            System.out.println("-------");
+            System.out.println("> Inicio > Tarefas");
+            System.out.println("1 - Buscar");
+            System.out.println("2 - Incluir");
+            System.out.println("3 - Alterar");
+            System.out.println("4 - Excluir");
+            System.out.println("0 - Voltar");
+
+            System.out.print("Opcao: ");
+            try {
+                opcao = Integer.valueOf(sc.nextLine());
+            } catch (NumberFormatException e) {
+                opcao = -1;
+            }
+
+            switch (opcao) {
+                case 1:
+                    buscarTarefa();
+                    break;
+                case 2:
+                    incluirTarefa();
+                    break;
+                case 3:
+                    alterarTarefa();
+                    break;
+                case 4:
+                    excluirTarefa();
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Opcao invalida!");
+                    break;
+            }
+
+        } while (opcao != 0);
+    }
+
+    public void buscarTarefa() {
+        String nomeCategoria;
+        System.out.println("\nNome da categoria da tarefa: ");
+        nomeCategoria = sc.nextLine();
+
         try {
-            int opcao = 0;
-            do {
-                opcoesMenu();
-                opcao = leOpcao();
-                executaOpcao(opcao);
-            } while(opcao != 0);
+            Categoria c = arqCategoria.read(nomeCategoria);
+            System.out.println("Nome da tarefa: ");
+            String nomeTarefa = sc.nextLine();
+            ArrayList<Tarefa> t = arqTarefa.readAll(c.getId());
+
+            for (Tarefa tmp : t) {
+                if (tmp.getNome().equals(nomeTarefa)) {
+                    System.out.println("Tarefa encontrada: ");
+                    System.out.println(tmp);
+                    return;
+                }
+            }
+            System.out.println("Tarefa nao econtrada nesta categoria!");
         } catch (Exception e) {
-            e.printStackTrace();
-        } 
-    } 
-
-    protected static void opcoesMenu() {
-        System.out.println("-------------------------"
-        +"\nTarefas       "
-        +"\n1 - Buscar               "
-        +"\n2 - Incluir              "
-        +"\n3 - Alterar              "
-        +"\n4 - Excluir              "
-        +"\n0 - Voltar               "
-        +"\nOpção: ");
-    } 
-
-    protected static void executaOpcao(int opcao) {
-        switch(opcao) {
-            case 0:
-                break;
-            case 1:
-                buscaTarefa();
-                break;
-            case 2:
-                incluiTarefa();
-                break;
-            case 3:
-                alteraTarefa();
-                break;
-            case 4:
-                excluiTarefa();
-                break;
-            default:
-                System.out.println("Opção inválida!");
-                break;
-        } 
-    } 
-
-    public static LocalDate formatarData(String dataStr) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate data = null;
-        try {
-            data = LocalDate.parse(dataStr, formatter);
-        } catch(DateTimeParseException e) {
-            System.out.println("\nFormato inválido. Por favor, use o formato dd/MM/yyyy.");
+            System.err.println("Erro no sistema");
         }
-        return data;
-    } 
+    }
+
+    public void incluirTarefa() {
+        String categoria;
+        int idCategoria = -1;
+
+        System.out.println("\nInclusao de tarefa");
+
+        System.out.print("Nome da Tarefa: ");
+        String nome = sc.nextLine();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        // insercao do status
+        listaStatus();
+        byte statusB = Byte.parseByte(sc.nextLine());
+        Status status = Status.fromByte(statusB);
+
+        // insercao da prioridade
+        listaPrioridades();
+        byte prioridadeB = Byte.parseByte(sc.nextLine());
+        Prioridade prioridade = Prioridade.fromByte(prioridadeB);
+
+        System.out.print("Data de Criação (dd/MM/yyyy) - 0 para data atual: ");
+        String dc = sc.nextLine();
+        LocalDate dataCriacao = LocalDate.now();
+        if (!dc.equals("0")) { 
+            dataCriacao = LocalDate.parse(dc, formatter);
+        }
+
+        LocalDate dataConclusao = LocalDate.parse("01/01/1970", formatter);
+        if(status == Status.CONCLUIDO){
+            System.out.print("Data de Conclusão (dd/MM/yyyy): ");
+            String input = sc.nextLine();
+            dataConclusao = LocalDate.parse(input, formatter);
+        }
+
+        // insercao da categoria
+        boolean catEscolhida = true;
+        do {
+            System.out.println("\n Digite o NOME DA CATEGORIA para a tarefa: ");
+            try {
+                catEscolhida = true;
+
+                arqCategoria.list();
+                System.out.print("\n > ");
+                categoria = sc.nextLine();
+                
+                idCategoria = arqCategoria.read(categoria).getId();
+            } catch (Exception e) {
+                System.err.println("\nCategoria inválida! Tente novamente");
+                catEscolhida = false;
+            }
+        } while (catEscolhida == false);
+
+        try {
+            Tarefa novaTarefa = new Tarefa(idCategoria, nome, dataCriacao, dataConclusao, status, prioridade);
+            arqTarefa.create(novaTarefa);
+            System.out.println("Tarefa criada com sucesso.");
+        } catch (Exception e) {
+            System.err.println("Erro do sistema. Não foi possível criar a tarefa!");
+        }
+
+    }
+
+    public void alterarTarefa() {
+        String nomeCategoria;
+        System.out.println("\nNome da categoria da tarefa a ser excluida: ");
+        arqCategoria.list();
+        System.out.print("\n > ");
+        nomeCategoria = sc.nextLine();
+
+        try {
+            Categoria c = arqCategoria.read(nomeCategoria);
+            System.out.println("\nNome da tarefa: ");
+            String nomeTarefa = sc.nextLine();
+            ArrayList<Tarefa> t = arqTarefa.readAll(c.getId());
+
+            Tarefa tarefaVelha = new Tarefa();
+            tarefaVelha.setId(-1);
+            for (Tarefa tmp : t) {
+                if (tmp.getNome().equals(nomeTarefa)) {
+                    System.out.println("Tarefa encontrada: ");
+                    System.out.println(tmp);
+                    tarefaVelha = tmp;
+                    break;
+                }
+            }
+
+                if (tarefaVelha.getId() != -1) {
+                System.out.println("Novos dados da tarefa: ");
+                System.out.print("Nome da Tarefa: ");
+                String nome = sc.nextLine();
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                System.out.println("\nData de Criacao (dd/MM/yyyy) - 0 para data atual");
+                System.out.print(": ");
+                String dc1 = sc.nextLine();
+                LocalDate dataCriacao = dc1.isEmpty() ? null : LocalDate.parse(dc1, formatter);
+
+                System.out.print("Data de Conclusão (dd/MM/yyyy): ");
+                String input = sc.nextLine();
+                LocalDate dataConclusao = input.isEmpty() ? null : LocalDate.parse(input, formatter);
+
+                listaStatus();
+                byte statusB = Byte.parseByte(sc.nextLine());
+                Status status = Status.fromByte(statusB);
+
+                listaPrioridades();
+                byte prioridadeB = Byte.parseByte(sc.nextLine());
+                Prioridade prioridade = Prioridade.fromByte(prioridadeB);
+
+                Tarefa novaTarefa = new Tarefa(tarefaVelha.getId(), tarefaVelha.getIdCategoria(), nome, dataCriacao, dataConclusao, status, prioridade);
+
+                System.out.println("Confirma a alteracao da tarefa? (S/N) ");
+                char resp = sc.nextLine().charAt(0);
+                if (resp == 'S' || resp == 's') {
+                    try {
+                        if (arqTarefa.update(novaTarefa)) {
+                            System.out.println("tarefa alterada com sucesso.");
+                        } else {
+                            System.out.println("Falha ao aletarar tarefa.");
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Erro do sistema. Nao foi possível alterar a tarefa!");
+                    }
+                }
+            } else {
+                System.out.println("Tarefa nao econtrada nesta categoria!");
+            }
+        } catch (Exception e) {
+            System.err.println("Erro no sistema");
+        }
+    }
+
+    public void excluirTarefa(){
+        String nomeCategoria;
+        System.out.println("\nNome da categoria da tarefa: ");
+        nomeCategoria = sc.nextLine();
+
+        try {
+            Categoria c = arqCategoria.read(nomeCategoria);
+            System.out.println("Nome da tarefa: ");
+            String nomeTarefa = sc.nextLine();
+            ArrayList<Tarefa> tarefas = arqTarefa.readAll(c.getId());
+
+            int idTarefa = -1;
+            for (Tarefa tmp : tarefas) {
+                if (tmp.getNome().equals(nomeTarefa)) {
+                    System.out.println("Tarefa encontrada: ");
+                    System.out.println(tmp);
+                    idTarefa = tmp.getId();
+                    break;
+                }
+            }
+
+            if (idTarefa != -1) {
+                System.out.println("Confirma a exclusao da tarefa? (S/N) ");
+                char resp = sc.nextLine().charAt(0);
+                if (resp == 'S' || resp == 's') {
+                    try {
+                        if (arqTarefa.delete(idTarefa)) {
+                            System.out.println("tarefa excluida com sucesso.");
+                        } else {
+                            System.out.println("tarefa inexistente");
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Erro do sistema. Nao foi possível excluir a tarefa!");
+                    }
+                }
+            } else {
+                System.out.println("Tarefa nao econtrada nesta categoria!");
+            }
+        } catch (Exception e) {
+            System.err.println("Erro no sistema");
+        }
+    }
 
     private static void listaStatus() {
         System.out.println("\nEscolha o status:"
-        +"\n1 - Pendente" 
-        +"\n2 - Em Progresso" 
-        +"\n3 - Concluída" 
-        +"\nStatus: ");
-    } 
+                + "\n1 - Pendente"
+                + "\n2 - Em Progresso"
+                + "\n3 - Concluída"
+                + "\nStatus: ");
+    }
 
     private static void listaPrioridades() {
         System.out.println("\nEscolha a prioridade:"
-        +"\n0 - Baixa                "
-        +"\n1 - Média                "
-        +"\n2 - Alta                 "
-        +"\n3 - Urgente              "
-        +"\nOpcao: ");
-    } 
-
-    private static void listaCategorias() {
-        System.out.println("\nCategorias:");
-        /* FAZER UM METODO PARA LER DO 'arqCategoria' E QUE RETORNA TODAS AS CATEGORIAS EXISTENTES */
-
-        /* 
-        System.out.println("1 - Trabalho" );
-        System.out.println("2 - Estudo"   );
-        System.out.println("3 - Lazer"    );
-        System.out.println("4 - Saúde"    );
-        System.out.println("5 - Outros"   );
-        System.out.print  ("Opção: "       ); 
-        */
-    } // end listar_categorias ()
-
-    public static Tarefa leTarefa() {
-        Tarefa tarefa = null;
-        try {
-            System.out.print("Nome: ");
-            String nome = sc.nextLine();
-
-            System.out.println("\nData de Criacao (dd/MM/yyyy) - 0 para data atual");
-            System.out.print(": ");
-            String dc1 = sc.nextLine();
-            LocalDate dataCriacao = (dc1.equals("0"))? LocalDate.now() : formatarData(dc1);
-
-            listaStatus();
-            byte statusB = Byte.parseByte(sc.nextLine());
-            Status status = Status.fromByte(statusB);
-
-            listaPrioridades();
-            byte prioridadeB = Byte.parseByte(sc.nextLine());
-            Prioridade prioridade = Prioridade.fromByte(prioridadeB);
-
-            listaCategorias();
-            //int idCategoria = Integer.parseInt(sc.nextLine());
-            MenuCategorias.buscaCategoria();
-
-            //tarefa = new Tarefa(nome, dataCriacao, status, prioridade, 0);
-        } catch (Exception e) {
-            System.out.println("\nErro na leitura!");
-        } 
-        return tarefa;
-    } 
-
-    public static void incluiTarefa() {
-        System.out.println("\nIncluir Tarefa:");
-        try{
-            Tarefa novaTarefa = leTarefa();
-            if (novaTarefa != null) {
-                System.out.println(novaTarefa);
-                System.out.println("\nConfirma inclusao? (S/N)");
-                char resp = sc.nextLine().charAt(0);
-                if(resp == 'S' || resp == 's') {
-                    try {
-                        arqTarefas.create(novaTarefa);
-                        System.out.println("Tarefa criada!");
-                    } catch(Exception e) {
-                        System.out.println("Erro do sistema. Nao foi possível criar a tarefa!");
-                    } 
-                } else {
-                    System.out.println("Inclusao cancelada!");
-                } 
-            }
-        } catch(Exception e) {
-            System.out.println("Erro ao incluir!");
-        }
-    } 
-
-    public static boolean buscaTarefa() {
-        boolean result = true;
-        System.out.println("\nBuscar Tarefa:");
-
-        System.out.print("ID: ");
-        int id = Integer.parseInt(sc.nextLine());
-        if(id < 0){
-            result = false;
-            System.out.println("ID menor que 0 inválido!");
-        } 
-        else {
-            try {
-                System.out.println(arqTarefas.read(id));
-            } catch (Exception e) { 
-                System.out.println("Erro na busca: " + e.getMessage());
-            }
-        }
-        return result;
-    } 
-
-    public static boolean alteraTarefa() {
-        boolean result = false;
-        System.out.println("\nAlterar Tarefa:");
-
-
-        return result;
-    } 
-
-    public static boolean excluiTarefa() {
-        boolean result = false;
-        System.out.println("\nExcluir Tarefa:");
-        return result;
-    } 
-
-} 
+                + "\n0 - Baixa                "
+                + "\n1 - Média                "
+                + "\n2 - Alta                 "
+                + "\n3 - Urgente              "
+                + "\nOpcao: ");
+    }
+}

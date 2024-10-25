@@ -9,77 +9,102 @@ import java.text.Normalizer;
 import java.util.regex.Pattern;
 
 public class ParNomeId implements RegistroArvoreBMais<ParNomeId> {
-    private int id;
-    private String nome;
-    private final short TAMANHO = 34;
 
-    public ParNomeId() {
-        this.id = -1;
-        this.nome = "";
+  private String nome;
+  private int id;
+  private short TAMANHO = 30;
+
+  public ParNomeId() throws Exception {
+    this("", -1);
+  }
+
+  public ParNomeId(String n) throws Exception {
+    this(n, -1);
+  }
+
+  public ParNomeId(String n, int i) throws Exception {
+    if (n.getBytes().length > 26) {
+      throw new Exception("Nome extenso demais. Diminua o número de caracteres.");
+    }
+    this.nome = n;
+    this.id = i;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public int getId() {
+    return this.id;
+  }
+
+  public void setNome(String s) {
+    this.nome = s;
+  }
+
+  public String getNome() {
+    return this.nome;
+  }
+
+  @Override
+  public ParNomeId clone() {
+    try {
+      return new ParNomeId(this.nome, this.id);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public short size() {
+    return this.TAMANHO;
+  }
+
+  public int compareTo(ParNomeId a) {
+    return transforma(this.nome).compareTo(transforma(a.nome));
+  }
+
+  public String toString() {
+    return this.id + ") " + this.nome;
+  }
+
+  public byte[] toByteArray() throws IOException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    DataOutputStream dos = new DataOutputStream(baos);
+
+    byte[] vb = new byte[26];
+    byte[] vbNome = this.nome.getBytes();
+
+    int i = 0;
+
+    while (i < vbNome.length) {
+      vb[i] = vbNome[i];
+      i++;
     }
 
-    public ParNomeId(String nome, int id) throws Exception {
-        this.id = id;
-        if (nome.getBytes().length <= 30) {
-            this.nome = nome;
-        } else{
-            throw new Exception("Nome extenso. Diminua o tamanho");
-        }
+    while (i < 26) {
+      vb[i] = ' ';
+      i++;
     }
+    dos.write(vb);
+    dos.writeInt(this.id);
+    return baos.toByteArray();
+  }
 
-    public int getId() {
-        return id;
-    }
+  public void fromByteArray(byte[] ba) throws IOException {
+    ByteArrayInputStream bais = new ByteArrayInputStream(ba);
+    DataInputStream dis = new DataInputStream(bais);
 
-    public String getNome() {
-        return nome;                                 
-    }
+    byte[] vb = new byte[26];
+    dis.read(vb);
 
-    @Override
-    public ParNomeId clone() {
-        ParNomeId p = null;
-        try {
-            p = new ParNomeId(this.nome, this.id);
-        }
-        catch(Exception e) {
-        } 
-        return p;
-    } 
+    this.nome = (new String(vb)).trim();
+    this.id = dis.readInt();
+  }
 
-    private static String strnormalize(String str) {
-        String normalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
-        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(normalizedString).replaceAll("").toLowerCase();
-    } 
-
-    public int compareTo(ParNomeId p) {
-        return strnormalize(this.nome).compareTo(strnormalize(p.nome));
-    }
-
-    @Override
-    public short size() {
-        return this.TAMANHO;
-    }
-    @Override
-    public String toString() {
-        return "("+this.id + " , " + this.nome+")";
-    }
-    @Override
-    public byte[] toByteArray() throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DataOutputStream dos = new DataOutputStream(baos);
-        dos.writeUTF(this.nome);
-        for(int i = this.nome.length();i<TAMANHO-4;i++){
-            dos.writeByte(' ');
-        }
-        dos.writeInt(this.id);
-        return baos.toByteArray();
-    }
-    @Override
-    public void fromByteArray(byte[] ba) throws IOException {
-        ByteArrayInputStream bais = new ByteArrayInputStream(ba);
-        DataInputStream dis = new DataInputStream(bais);
-        this.nome = dis.readUTF().trim();
-        this.id = dis.readInt();
-    }
+  public static String transforma(String str) {
+    String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
+    Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+    return pattern.matcher(nfdNormalizedString).replaceAll("").toLowerCase();
+  }
 }

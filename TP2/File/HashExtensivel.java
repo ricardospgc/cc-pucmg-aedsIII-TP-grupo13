@@ -22,27 +22,26 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
     public class Cesto {
 
         Constructor<T> construtor;
-        short quantidadeMaxima; // quantidade máxima de elementos que o cesto pode conter
-        short bytesPorElemento; // tamanho fixo de cada elemento em bytes
-        short bytesPorCesto; // tamanho fixo do cesto em bytes
+        short quantidadeMaxima;
+        short bytesPorElemento;
+        short bytesPorCesto;
 
-        byte profundidadeLocal; // profundidade local do cesto
-        short quantidade; // quantidade de elementos presentes no cesto
-        ArrayList<T> elementos; // sequência de elementos armazenados
+        byte profundidadeLocal;
+        short quantidade;
+        ArrayList<T> elementos;
 
-        /*
-         * Construtores de Cesto
-         */
         public Cesto(Constructor<T> ct, int qtdmax) throws Exception {
             this(ct, qtdmax, 0);
         }
 
         public Cesto(Constructor<T> ct, int qtdmax, int pl) throws Exception {
             construtor = ct;
-            if (qtdmax > 32767)
+            if (qtdmax > 32767) {
                 throw new Exception("Quantidade máxima de 32.767 elementos");
-            if (pl > 127)
+            }
+            if (pl > 127) {
                 throw new Exception("Profundidade local máxima de 127 bits");
+            }
             profundidadeLocal = (byte) pl;
             quantidade = 0;
             quantidadeMaxima = (short) qtdmax;
@@ -87,72 +86,75 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
             }
         }
 
-        // Inserir elementos no cesto
         public boolean create(T elem) {
-            if (full())
+            if (full()) {
                 return false;
-            int i = quantidade - 1; // posição do último elemento no cesto
-            while (i >= 0 && elem.hashCode() < elementos.get(i).hashCode())
+            }
+            int i = quantidade - 1;
+            while (i >= 0 && elem.hashCode() < elementos.get(i).hashCode()) {
                 i--;
+            }
             elementos.add(i + 1, elem);
             quantidade++;
             return true;
         }
 
-        // Buscar um elemento no cesto
         public T read(int chave) {
-            if (empty())
+            if (empty()) {
                 return null;
+            }
             int i = 0;
-            while (i < quantidade && chave > elementos.get(i).hashCode())
+            while (i < quantidade && chave > elementos.get(i).hashCode()) {
                 i++;
-            if (i < quantidade && chave == elementos.get(i).hashCode())
-                return elementos.get(i);
-            else
+            }
+            if (i < quantidade && chave == elementos.get(i).hashCode()) {
+                return elementos.get(i); 
+            }else {
                 return null;
+            }
         }
 
-        // atualizar um elemento do cesto
         public boolean update(T elem) {
-            if (empty())
+            if (empty()) {
                 return false;
+            }
             int i = 0;
-            while (i < quantidade && elem.hashCode() > elementos.get(i).hashCode())
+            while (i < quantidade && elem.hashCode() > elementos.get(i).hashCode()) {
                 i++;
+            }
             if (i < quantidade && elem.hashCode() == elementos.get(i).hashCode()) {
                 elementos.set(i, elem);
                 return true;
-            } else
+            } else {
                 return false;
+            }
         }
 
-        // pagar um elemento do cesto
         public boolean delete(int chave) {
-            if (empty())
+            if (empty()) {
                 return false;
+            }
             int i = 0;
-            while (i < quantidade && chave > elementos.get(i).hashCode())
+            while (i < quantidade && chave > elementos.get(i).hashCode()) {
                 i++;
+            }
             if (chave == elementos.get(i).hashCode()) {
                 elementos.remove(i);
                 quantidade--;
                 return true;
-            } else
+            } else {
                 return false;
+            }
         }
 
-        //Verifica se há elementos
         public boolean empty() {
             return quantidade == 0;
         }
 
-        //Verifica se está cheio
         public boolean full() {
             return quantidade == quantidadeMaxima;
         }
 
-        //Retorna uma String Contendo as informações do Cesto
-        @Override
         public String toString() {
             String s = "Profundidade Local: " + profundidadeLocal + "\nQuantidade: " + quantidade + "\n| ";
             int i = 0;
@@ -167,7 +169,6 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
             return s;
         }
 
-        //Retorna o tamanho do Cesto em Bytes
         public int size() {
             return bytesPorCesto;
         }
@@ -178,17 +179,16 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
         byte profundidadeGlobal;
         long[] enderecos;
 
-        //Construtor
         public Diretorio() {
             profundidadeGlobal = 0;
             enderecos = new long[1];
             enderecos[0] = 0;
         }
 
-        //Função que atualiza o Endereço
         public boolean atualizaEndereco(int p, long e) {
-            if (p > Math.pow(2, profundidadeGlobal))
+            if (p > Math.pow(2, profundidadeGlobal)) {
                 return false;
+            }
             enderecos[p] = e;
             return true;
         }
@@ -219,8 +219,6 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
             }
         }
 
-        //Retorna uma String que contém as informações do Diretorio
-        @Override
         public String toString() {
             String s = "\nProfundidade global: " + profundidadeGlobal;
             int i = 0;
@@ -232,26 +230,27 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
             return s;
         }
 
-        //Retorna o endereço, de acordo com um int
-        protected long endereco(int p) {
-            if (p > Math.pow(2, profundidadeGlobal))
+        protected long endereço(int p) {
+            if (p > Math.pow(2, profundidadeGlobal)) {
                 return -1;
+            }
             return enderecos[p];
         }
 
         protected boolean duplica() {
-            if (profundidadeGlobal == 127)
+            if (profundidadeGlobal == 127) {
                 return false;
+            }
             profundidadeGlobal++;
             int q1 = (int) Math.pow(2, profundidadeGlobal - 1);
             int q2 = (int) Math.pow(2, profundidadeGlobal);
             long[] novosEnderecos = new long[q2];
             int i = 0;
-            while (i < q1) { // copia o vetor anterior para a primeiro metade do novo vetor
+            while (i < q1) {
                 novosEnderecos[i] = enderecos[i];
                 i++;
             }
-            while (i < q2) { // copia o vetor anterior para a segunda metade do novo vetor
+            while (i < q2) {
                 novosEnderecos[i] = enderecos[i - q1];
                 i++;
             }
@@ -259,17 +258,13 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
             return true;
         }
 
-        // Para efeito de determinar o cesto em que o elemento deve ser inserido,
-        // só serão considerados valores absolutos da chave.
         protected int hash(int chave) {
             return Math.abs(chave) % (int) Math.pow(2, profundidadeGlobal);
         }
 
-        // Método auxiliar para atualizar endereço ao duplicar o diretório
-        protected int hash2(int chave, int pl) { // cálculo do hash para uma dada profundidade local
+        protected int hash2(int chave, int pl) {
             return Math.abs(chave) % (int) Math.pow(2, pl);
         }
-
     }
 
     public HashExtensivel(Constructor<T> ct, int n, String nd, String nc) throws Exception {
@@ -281,16 +276,11 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
         arqDiretorio = new RandomAccessFile(nomeArquivoDiretorio, "rw");
         arqCestos = new RandomAccessFile(nomeArquivoCestos, "rw");
 
-        // Se o diretório ou os cestos estiverem vazios, cria um novo diretório e lista
-        // de cestos
         if (arqDiretorio.length() == 0 || arqCestos.length() == 0) {
-
-            // Cria um novo diretório, com profundidade de 0 bits (1 único elemento)
             diretorio = new Diretorio();
             byte[] bd = diretorio.toByteArray();
             arqDiretorio.write(bd);
 
-            // Cria um cesto vazio, já apontado pelo único elemento do diretório
             Cesto c = new Cesto(construtor, quantidadeDadosPorCesto);
             bd = c.toByteArray();
             arqCestos.seek(0);
@@ -299,46 +289,38 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
     }
 
     public boolean create(T elem) throws Exception {
-
-        // Carrega TODO o diretório para a memória
         byte[] bd = new byte[(int) arqDiretorio.length()];
         arqDiretorio.seek(0);
         arqDiretorio.read(bd);
         diretorio = new Diretorio();
         diretorio.fromByteArray(bd);
 
-        // Identifica a hash do diretório,
         int i = diretorio.hash(elem.hashCode());
 
-        // Recupera o cesto
-        long enderecoCesto = diretorio.endereco(i);
+        long enderecoCesto = diretorio.endereço(i);
         Cesto c = new Cesto(construtor, quantidadeDadosPorCesto);
         byte[] ba = new byte[c.size()];
         arqCestos.seek(enderecoCesto);
         arqCestos.read(ba);
         c.fromByteArray(ba);
 
-        // Testa se a chave já não existe no cesto
-        if (c.read(elem.hashCode()) != null)
+        if (c.read(elem.hashCode()) != null) {
             throw new Exception("Elemento já existe");
+        }
 
-        // Testa se o cesto já não está cheio
-        // Se não estiver, create o par de chave e dado
         if (!c.full()) {
-            // Insere a chave no cesto e o atualiza
             c.create(elem);
             arqCestos.seek(enderecoCesto);
             arqCestos.write(c.toByteArray());
             return true;
         }
 
-        // Duplica o diretório
         byte pl = c.profundidadeLocal;
-        if (pl >= diretorio.profundidadeGlobal)
+        if (pl >= diretorio.profundidadeGlobal) {
             diretorio.duplica();
+        }
         byte pg = diretorio.profundidadeGlobal;
 
-        // Cria os novos cestos, com os seus dados no arquivo de cestos
         Cesto c1 = new Cesto(construtor, quantidadeDadosPorCesto, pl + 1);
         arqCestos.seek(enderecoCesto);
         arqCestos.write(c1.toByteArray());
@@ -348,46 +330,38 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
         arqCestos.seek(novoEndereco);
         arqCestos.write(c2.toByteArray());
 
-        // Atualiza os dados no diretório
         int inicio = diretorio.hash2(elem.hashCode(), c.profundidadeLocal);
         int deslocamento = (int) Math.pow(2, pl);
         int max = (int) Math.pow(2, pg);
         boolean troca = false;
         for (int j = inicio; j < max; j += deslocamento) {
-            if (troca)
+            if (troca) {
                 diretorio.atualizaEndereco(j, novoEndereco);
+            }
             troca = !troca;
         }
 
-        // Atualiza o arquivo do diretório
         bd = diretorio.toByteArray();
         arqDiretorio.seek(0);
         arqDiretorio.write(bd);
 
-        // Reinsere as chaves do cesto antigo
         for (int j = 0; j < c.quantidade; j++) {
             create(c.elementos.get(j));
         }
-        create(elem); // insere o nome elemento
+        create(elem);
         return true;
-
     }
 
-    //Função que faz a leitura de registros de acordo com uma chave
     public T read(int chave) throws Exception {
-
-        // Carrega o diretório
         byte[] bd = new byte[(int) arqDiretorio.length()];
         arqDiretorio.seek(0);
         arqDiretorio.read(bd);
         diretorio = new Diretorio();
         diretorio.fromByteArray(bd);
 
-        // Identifica a hash do diretório,
         int i = diretorio.hash(chave);
 
-        // Recupera o cesto
-        long enderecoCesto = diretorio.endereco(i);
+        long enderecoCesto = diretorio.endereço(i);
         Cesto c = new Cesto(construtor, quantidadeDadosPorCesto);
         byte[] ba = new byte[c.size()];
         arqCestos.seek(enderecoCesto);
@@ -397,70 +371,56 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
         return c.read(chave);
     }
 
-    //Atualiza um Registro
     public boolean update(T elem) throws Exception {
-
-        // Carrega o diretório
         byte[] bd = new byte[(int) arqDiretorio.length()];
         arqDiretorio.seek(0);
         arqDiretorio.read(bd);
         diretorio = new Diretorio();
         diretorio.fromByteArray(bd);
 
-        // Identifica a hash do diretório,
         int i = diretorio.hash(elem.hashCode());
 
-        // Recupera o cesto
-        long enderecoCesto = diretorio.endereco(i);
+        long enderecoCesto = diretorio.endereço(i);
         Cesto c = new Cesto(construtor, quantidadeDadosPorCesto);
         byte[] ba = new byte[c.size()];
         arqCestos.seek(enderecoCesto);
         arqCestos.read(ba);
         c.fromByteArray(ba);
 
-        // atualiza o dado
-        if (!c.update(elem))
+        if (!c.update(elem)) {
             return false;
+        }
 
-        // Atualiza o cesto
         arqCestos.seek(enderecoCesto);
         arqCestos.write(c.toByteArray());
         return true;
-
     }
 
-    //Função que deleta um Registro atraves da sua chave(int)
     public boolean delete(int chave) throws Exception {
-
-        // Carrega o diretório
         byte[] bd = new byte[(int) arqDiretorio.length()];
         arqDiretorio.seek(0);
         arqDiretorio.read(bd);
         diretorio = new Diretorio();
         diretorio.fromByteArray(bd);
 
-        // Identifica a hash do diretório,
         int i = diretorio.hash(chave);
 
-        // Recupera o cesto
-        long enderecoCesto = diretorio.endereco(i);
+        long enderecoCesto = diretorio.endereço(i);
         Cesto c = new Cesto(construtor, quantidadeDadosPorCesto);
         byte[] ba = new byte[c.size()];
         arqCestos.seek(enderecoCesto);
         arqCestos.read(ba);
         c.fromByteArray(ba);
 
-        // delete a chave
-        if (!c.delete(chave))
+        if (!c.delete(chave)) {
             return false;
+        }
 
-        // Atualiza o cesto
         arqCestos.seek(enderecoCesto);
         arqCestos.write(c.toByteArray());
         return true;
     }
 
-    //Printa as informações de Cesto e Diretório
     public void print() {
         try {
             byte[] bd = new byte[(int) arqDiretorio.length()];
@@ -484,5 +444,10 @@ public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void close() throws Exception {
+        arqDiretorio.close();
+        arqCestos.close();
     }
 }
