@@ -9,8 +9,8 @@ public class ArquivoCategoria extends Arquivo<Categoria> {
     ArvoreBMais<ParNomeId> indiceIndiretoNome;
 
     public ArquivoCategoria() throws Exception {
-        super("categorias", Categoria.class.getConstructor());
-        indiceIndiretoNome = new ArvoreBMais<>(ParNomeId.class.getConstructor(), 5, "./dados/indiceIndiretoNome.btree.db");
+        super("Categorias", Categoria.class.getConstructor());
+        indiceIndiretoNome = new ArvoreBMais<>(ParNomeId.class.getConstructor(), 5, "./BaseDeDados/indiceIndiretoNome.btree.db");
     }
 
     @Override

@@ -265,9 +265,9 @@ public class MenuTarefas {
 
     private static void listaStatus() {
         System.out.println("\nEscolha o status:"
-                + "\n1 - Pendente"
-                + "\n2 - Em Progresso"
-                + "\n3 - Concluída"
+                + "\n0 - Pendente"
+                + "\n1 - Em Progresso"
+                + "\n2 - Concluída"
                 + "\nStatus: ");
     }
 

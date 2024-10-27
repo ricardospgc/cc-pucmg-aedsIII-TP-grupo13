@@ -6,6 +6,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.text.Normalizer;
+import java.util.regex.Pattern;
 
 public class Categoria implements Registro {
 
@@ -62,4 +64,10 @@ public class Categoria implements Registro {
         this.id = dis.readInt();
         this.nome = dis.readUTF();
     }
+
+    private static String strnormalize (String str) {
+        String normalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(normalizedString).replaceAll("").toLowerCase();
+    } 
 }

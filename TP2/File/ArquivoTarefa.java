@@ -8,8 +8,8 @@ public class ArquivoTarefa extends Arquivo<Tarefa> {
     ArvoreBMais<ParIdId> indice_indireto_id;
 
     public ArquivoTarefa() throws Exception {
-        super("tarefas", Tarefa.class.getConstructor());
-        indice_indireto_id = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5, "./dados/indice_indireto_id.btree.db");
+        super("Tarefas", Tarefa.class.getConstructor());
+        indice_indireto_id = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5, "./BaseDeDados/indice_indireto_id.btree.db");
     }
 
     @Override
@@ -22,7 +22,7 @@ public class ArquivoTarefa extends Arquivo<Tarefa> {
     public ArrayList<Tarefa> readAll(int id) throws Exception {
         ArrayList<ParIdId> p = indice_indireto_id.read(new ParIdId(id, -1));
         ArrayList<Tarefa> t = new ArrayList<>();
-        Arquivo<Tarefa> arq = new Arquivo<>("tarefas", Tarefa.class.getConstructor());
+        Arquivo<Tarefa> arq = new Arquivo<>("Tarefas", Tarefa.class.getConstructor());
 
         if (p != null && !p.isEmpty()) {
             for (ParIdId p_aux : p) {
