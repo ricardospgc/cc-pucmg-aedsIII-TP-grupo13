@@ -290,6 +290,60 @@ A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. 
   > Sim.
 ---
 ## TP2
+
+Relatório
+"Descrevam um pouco o esforço. Uma descrição do seu trabalho nas suas próprias palavras. Basicamente, vocês devem responder à seguinte pergunta: O que o trabalho de vocês faz?"
+
+> O trabalho 2 implementa no CRUD desenvolvido: apresenta menu de opções no console; um índice indireto para as tarefas ChaveID; introduz a entidade categoria, também com um índice indireto NomeId; relaciona as categorias e tarefas com relação 1:N, através de uma árvore B+.
+
+> O menu de opções permite o usuário, através da inserção de comandos no console, realizar as 4 operações do CRUD para Tarefas e Categorias de forma intuitiva.
+
+> O índice indireto organiza as Tarefas e Categorias por ID, facilitando a criação dos pares de ID e as operações pesquisa na base dados.
+
+> A Árvore B+ apoia a implementação do relacionamento 1:N entre Tarefas e Categorias, organizando-as em ordem alfabética.
+
+---
+
+### Descrição das Classes e Métodos (referentes ao TP2)
+
+### Classes:
+
+---
+
+### Experiência de Desenvolvimento
+"Finalmente, relatem um pouco a experiência de vocês, explicando questões como: Vocês implementaram todos os requisitos? Houve alguma operação mais difícil? 
+Vocês enfrentaram algum desafio na implementação? Os resultados foram alcançados?
+A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. Aqui, a ideia é entender como foi para vocês desenvolver este TP."
+
+> A nossa experiência de desenvolvimento dessa etapa foi postivia, apesar do grau mais elevado de dificuldade. Tivemos problemas em adaptar nossa implementação para a Árvore B+ disponibilizada, além de demorarmos mais do que o previsto para concluir totalmente o projeto. Percebemos que com o aumento da escala do projeto, organização e planejamento são essenciais. Por fim, conseguimos entregar todos os requisitos.
+
+> Para facilitar a cooperação, usamos muito a extensão Live Share do Visual Studio Code, que permite aos participantes acompanharem as mudanças em tempo real. Com isso, discutimos as dificuldades e diferentes estratégias.
+
+---
+
+
+---
+### Perguntas finais
+
+- O CRUD (com índice direto) de categorias foi implementado?
+  > Sim.
+- Há um índice indireto de nomes para as categorias?
+  > Sim.
+- O atributo de ID de categoria, como chave estrangeira, foi criado na classe Tarefa?
+  > Sim.
+- Há uma árvore B+ que registre o relacionamento 1:N entre tarefas e categorias?
+  > Sim.
+- É possível listar as tarefas de uma categoria?
+  >
+- A inclusão da categoria em uma tarefa se limita às categorias existentes?
+  > Sim.
+- O trabalho está funcionando corretamente?
+  > Sim.
+- O trabalho está completo?
+  > Sim.
+- O trabalho é original e não a cópia de um trabalho de outro grupo?
+  > Sim.
+---
 ---
 ## TP3
 ---
