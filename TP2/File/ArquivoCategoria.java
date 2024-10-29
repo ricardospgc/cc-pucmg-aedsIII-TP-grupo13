@@ -98,9 +98,9 @@ public class ArquivoCategoria extends Arquivo<Categoria> {
                 c = new Categoria();
                 c.fromByteArray(b);
                 categorias.add(c);
-            } // end if
-        } // end while
+            }
+        }
 
-        return (categorias);
+        return categorias;
     }
 }

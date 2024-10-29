@@ -275,47 +275,44 @@ public class MenuTarefas {
     }
 
     public void listarPorCategoria() {
-        boolean result = false;
-        System.out.println( "\n> Buscar Tarefa por Categoria:" );
-         try 
-        {
+        System.out.println("\n> Buscar Tarefa por Categoria:");
+        try {
+            // Obtém todas as categorias existentes
             List<Categoria> categorias = arqCategoria.readAll();
-            if( categorias.isEmpty( ) ) 
-            {
+            
+            // Verifica se há categorias cadastradas
+            if (categorias.isEmpty()) {
                 System.out.println("Não há categorias cadastradas!");
-            }
-            else
-            {
+            } else {
+                // Lista as categorias disponíveis
                 arqCategoria.list();
                 System.out.print("> ");
                 int idCategoria = Integer.parseInt(sc.nextLine());
-
-                if( idCategoria > 0 ) 
-                {
+    
+                // Verifica se o ID da categoria inserido é válido
+                if (idCategoria > 0) {
+                    // Obtém todas as tarefas associadas à categoria escolhida
                     List<Tarefa> tarefas = arqTarefa.readAll(idCategoria);
-
-                    if( tarefas.isEmpty( ) ) 
-                    {
+    
+                    // Verifica se há tarefas cadastradas para a categoria escolhida
+                    if (tarefas.isEmpty()) {
                         System.out.println("Não há tarefas cadastradas!");
-                    } 
-                    else 
-                    {
-                        System.out.println( "\nLista de tarefas:" );
-                        for( Tarefa tarefa : tarefas ) 
-                        {
+                    } else {
+                        // Exibe a lista de tarefas da categoria
+                        System.out.println("\nLista de tarefas:");
+                        for (Tarefa tarefa : tarefas) {
                             System.out.println(tarefa);
-                        } // end for
-                        result = true;
+                        }
                     }
                 } else {
                     System.out.println("ID inválido!");
                 }
             }
-        } catch( Exception e ) {
+        } catch (Exception e) { // Trata qualquer exceção inesperada que possa ocorrer
             System.out.println("Erro no sistema. Não foi possível buscar tarefa!");
         }
-
     }
+    
     
 
     // Método para listar os status disponíveis
