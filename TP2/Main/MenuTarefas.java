@@ -7,6 +7,7 @@ import File.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuTarefas {
@@ -32,6 +33,7 @@ public class MenuTarefas {
             System.out.println("2 - Incluir");
             System.out.println("3 - Alterar");
             System.out.println("4 - Excluir");
+            System.out.println("5 - Listar por categoria");
             System.out.println("0 - Voltar");
 
             System.out.print("Opcao: ");
@@ -54,6 +56,9 @@ public class MenuTarefas {
                     break;
                 case 4:
                     excluirTarefa();  // Chama o método para excluir uma tarefa
+                    break;
+                case 5: // Chama o método para listar as tarefas por categoria
+                    listarPorCategoria();
                     break;
                 case 0:
                     break;
@@ -268,6 +273,50 @@ public class MenuTarefas {
             System.err.println("Erro no sistema");
         }
     }
+
+    public void listarPorCategoria() {
+        boolean result = false;
+        System.out.println( "\n> Buscar Tarefa por Categoria:" );
+         try 
+        {
+            List<Categoria> categorias = arqCategoria.readAll();
+            if( categorias.isEmpty( ) ) 
+            {
+                System.out.println("Não há categorias cadastradas!");
+            }
+            else
+            {
+                arqCategoria.list();
+                System.out.print("> ");
+                int idCategoria = Integer.parseInt(sc.nextLine());
+
+                if( idCategoria > 0 ) 
+                {
+                    List<Tarefa> tarefas = arqTarefa.readAll(idCategoria);
+
+                    if( tarefas.isEmpty( ) ) 
+                    {
+                        System.out.println("Não há tarefas cadastradas!");
+                    } 
+                    else 
+                    {
+                        System.out.println( "\nLista de tarefas:" );
+                        for( Tarefa tarefa : tarefas ) 
+                        {
+                            System.out.println(tarefa);
+                        } // end for
+                        result = true;
+                    }
+                } else {
+                    System.out.println("ID inválido!");
+                }
+            }
+        } catch( Exception e ) {
+            System.out.println("Erro no sistema. Não foi possível buscar tarefa!");
+        }
+
+    }
+    
 
     // Método para listar os status disponíveis
     private static void listaStatus() {

@@ -2,24 +2,26 @@ package File;
 
 import Entidades.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ArquivoCategoria extends Arquivo<Categoria> {
 
-    Arquivo<Categoria> arqCategoria;  // Referência para o arquivo de categorias
-    ArvoreBMais<ParNomeId> indiceIndiretoNome;  // Índice indireto para acessar categorias pelo nome
+    Arquivo<Categoria> arqCategoria; // Referência para o arquivo de categorias
+    ArvoreBMais<ParNomeId> indiceIndiretoNome; // Índice indireto para acessar categorias pelo nome
 
     // Construtor da classe ArquivoCategoria
     public ArquivoCategoria() throws Exception {
         super("Categorias", Categoria.class.getConstructor());
         // Inicializa o índice indireto utilizando uma Árvore B+
-        indiceIndiretoNome = new ArvoreBMais<>(ParNomeId.class.getConstructor(), 5, "./BaseDeDados/indiceIndiretoNome.btree.db");
+        indiceIndiretoNome = new ArvoreBMais<>(ParNomeId.class.getConstructor(), 5,
+                "./BaseDeDados/indiceIndiretoNome.btree.db");
     }
 
     // Sobrescreve o método create para incluir a inserção no índice indireto
     @Override
     public int create(Categoria c) throws Exception {
         int id = super.create(c);
-        indiceIndiretoNome.create(new ParNomeId(c.getNome(), id));  // Atualiza o índice indireto
+        indiceIndiretoNome.create(new ParNomeId(c.getNome(), id)); // Atualiza o índice indireto
         return id;
     }
 
@@ -33,7 +35,7 @@ public class ArquivoCategoria extends Arquivo<Categoria> {
 
     // Método para excluir um registro a partir do nome
     public boolean delete(String n) throws Exception {
-        return delete(read(n).getId());  // Exclui a categoria a partir do ID encontrado
+        return delete(read(n).getId()); // Exclui a categoria a partir do ID encontrado
     }
 
     // Sobrescreve o método delete para excluir também do índice indireto
@@ -53,7 +55,7 @@ public class ArquivoCategoria extends Arquivo<Categoria> {
     public void list() {
         try {
             System.out.println();
-            indiceIndiretoNome.show();  // Mostra os registros do índice indireto
+            indiceIndiretoNome.show(); // Mostra os registros do índice indireto
         } catch (Exception e) {
             System.err.println("Erro no sistema");
         }
@@ -72,5 +74,33 @@ public class ArquivoCategoria extends Arquivo<Categoria> {
             return true;
         }
         return false;
+    }
+
+    // lê todas as categorias e armazena em uma lista
+    public List<Categoria> readAll() throws Exception {
+        List<Categoria> categorias = new ArrayList<>();
+
+        arquivo.seek(TAM_CABECALHO);
+        byte lapide = ' ';
+        short tam = 0;
+        byte[] b = null;
+
+        Categoria c = null;
+
+        // Lê até o final do arquivo
+        while (arquivo.getFilePointer() < arquivo.length()) {
+            lapide = arquivo.readByte();
+            tam = arquivo.readShort();
+            b = new byte[tam];
+            arquivo.read(b);
+
+            if (lapide != '*') {
+                c = new Categoria();
+                c.fromByteArray(b);
+                categorias.add(c);
+            } // end if
+        } // end while
+
+        return (categorias);
     }
 }
