@@ -308,6 +308,268 @@ Relatório
 
 ### Classes:
 
+### Classe Categoria
+
+A classe `Categoria` representa uma categoria de objetos que implementa a interface `Registro`. É responsável por armazenar um identificador único (`id`) e um nome (`nome`) da categoria, além de fornecer métodos para manipulação, conversão e normalização dos dados.
+
+#### Componentes da Classe
+
+1. **Campos**
+   - **`int id`**: Identificador único da categoria.
+   - **`String nome`**: Nome da categoria.
+
+2. **Construtores**
+   - **`public Categoria()`**: Construtor padrão que inicializa o `id` com -1 e o `nome` como uma string vazia.
+   - **`public Categoria(String n)`**: Construtor que inicializa o `id` com -1 e define o `nome` de acordo com o parâmetro `n`.
+   - **`public Categoria(int i, String n)`**: Construtor que define o `id` e o `nome` de acordo com os parâmetros `i` e `n`, respectivamente.
+
+3. **Métodos**
+
+   - **`public void setId(int id)`**: Define o valor do campo `id`.
+
+   - **`public int getId()`**: Retorna o valor do campo `id`.
+     
+   - **`public void setNome(String nome)`**: Define o valor do campo `nome`.
+     
+   - **`public String getNome()`**: Retorna o valor do campo `nome`.
+     
+   - **`public String toString()`**: Retorna uma representação em string da categoria no formato `ID..: {id}\nNome: {nome}`.
+     
+   - **`public byte[] toByteArray() throws IOException`**: Converte o objeto `Categoria` em um array de bytes para serialização.
+     
+   - **`public void fromByteArray(byte[] b) throws IOException`**: Popula o objeto `Categoria` a partir de um array de bytes.
+     
+   - **`private static String strnormalize(String str)`**: Normaliza uma string removendo acentos e convertendo os caracteres para minúsculas, utilizando a forma de normalização `NFD`.
+
+---
+
+### MenuCategorias
+
+A classe `MenuCategorias` é responsável por gerenciar o menu de categorias, permitindo operações de busca, inclusão, alteração, exclusão e listagem de categorias. Ela utiliza instâncias de `ArquivoTarefa` e `ArquivoCategoria` para manipulação de tarefas e categorias.
+
+#### Componentes da Classe
+
+1. **Campos**
+   - **`ArquivoTarefa arqTarefa`**: Objeto para manipulação de tarefas.
+   - **`ArquivoCategoria arqCategoria`**: Objeto para manipulação de categorias.
+   - **`Scanner sc`**: Utilizado para leitura de entrada do usuário no menu.
+
+2. **Construtor**
+   - **`public MenuCategorias()`**: Inicializa os arquivos de categorias e tarefas, lançando exceção caso haja erro na inicialização.
+
+3. **Métodos**
+   - **`public void menu()`**: Método principal que exibe o menu de categorias e captura a entrada do usuário, chamando os métodos correspondentes às opções escolhidas (buscar, incluir, alterar, excluir, listar).
+     
+   - **`public void buscarCategoria()`**: Exibe o submenu para busca de categorias, solicitando o nome da categoria e exibindo a categoria e suas tarefas associadas, caso encontradas.
+
+   - **`public void incluirCategoria()`**: Exibe o submenu para inclusão de uma nova categoria, solicitando o nome e confirmando a inclusão com o usuário antes de adicioná-la ao arquivo de categorias.
+
+   - **`public void alterarCategoria()`**: Permite a alteração de uma categoria existente, solicitando o nome, realizando a busca e atualizando o novo nome informado pelo usuário.
+
+   - **`public void excluirCategoria()`**: Exibe o submenu para exclusão de uma categoria, realizando a verificação de tarefas associadas e confirmando a exclusão com o usuário antes de remover a categoria.
+
+---
+
+### Classe `MenuTarefas`
+
+A classe `MenuTarefas` gerencia a interface de usuário para manipulação de tarefas. Ela permite ao usuário buscar, incluir, alterar e excluir tarefas, além de associá-las a categorias específicas.
+
+#### Componentes da Classe
+
+1. **Campos**
+   - **`ArquivoTarefa arqTarefa`**: Objeto responsável pela manipulação dos dados das tarefas.
+   - **`ArquivoCategoria arqCategoria`**: Objeto responsável pela manipulação dos dados das categorias.
+   - **`Scanner sc`**: Scanner para entrada de dados do usuário.
+
+2. **Construtor**
+   - **`public MenuTarefas()`**: Inicializa as instâncias de `ArquivoTarefa` e `ArquivoCategoria`, que representam os arquivos onde as tarefas e categorias são armazenadas.
+
+3. **Métodos**
+
+   - **`public void menu()`**: Exibe o menu principal de opções para tarefas e captura a opção escolhida pelo usuário, chamando o método correspondente de acordo com a escolha.
+
+   - **`public void buscarTarefa()`**: Busca uma tarefa específica por nome e categoria. Exibe a tarefa encontrada e seus detalhes, ou uma mensagem de erro caso a tarefa não exista.
+
+   - **`public void incluirTarefa()`**: Inclui uma nova tarefa. Solicita ao usuário as informações necessárias, como nome, categoria, status, prioridade, e datas de criação e conclusão. Em seguida, cria a tarefa e a armazena no arquivo.
+
+   - **`public void alterarTarefa()`**: Altera uma tarefa existente. Permite ao usuário modificar informações da tarefa, como nome, datas, status, e prioridade, confirmando a atualização ao final do processo.
+
+   - **`public void excluirTarefa()`**: Exclui uma tarefa específica. Solicita a categoria e nome da tarefa, confirmando a exclusão ao final. Exibe uma mensagem de erro caso a tarefa não seja encontrada.
+
+   - **`public void listarPorCategoria()`**: Exibe todas as tarefas de uma categoria. Solicita o ID da categoria, verifica se é válido. Verifica se há tarefas na categoria escolhida.
+
+   - **`private static void listaStatus()`**: Exibe uma lista de status possíveis para as tarefas, permitindo ao usuário selecionar o status desejado.
+
+   - **`private static void listaPrioridades()`**: Exibe uma lista de prioridades possíveis para as tarefas, permitindo ao usuário selecionar a prioridade desejada.
+
+---
+
+### Classe `ArquivoCategoria`
+
+A classe `ArquivoCategoria` gerencia a manipulação dos dados das categorias e implementa um índice indireto para acesso eficiente às categorias pelo nome.
+
+#### Componentes da Classe
+
+1. **Campos**
+   - **`Arquivo<Categoria> arqCategoria`**: Referência para o arquivo de categorias.
+   - **`ArvoreBMais<ParNomeId> indiceIndiretoNome`**: Índice indireto para acessar categorias pelo nome, implementado como uma Árvore B+.
+
+2. **Construtor**
+   - **`public ArquivoCategoria()`**: Inicializa o arquivo para armazenar categorias e configura o índice indireto `indiceIndiretoNome`, utilizando uma Árvore B+ para permitir busca eficiente pelo nome da categoria.
+
+3. **Métodos**
+
+   - **`public int create(Categoria c)`**: Sobrescreve o método `create` para incluir a inserção no índice indireto, permitindo acesso pelo nome da categoria. Após criar a categoria, adiciona uma entrada no índice indireto associando o nome ao ID.
+   
+   - **`public Categoria read(String n)`**: Realiza a leitura de uma categoria com base no nome fornecido. Utiliza o índice indireto para localizar o ID correspondente ao nome e, em seguida, lê a categoria usando o ID.
+   
+   - **`public boolean delete(String n)`**: Exclui uma categoria com base no nome, utilizando o índice indireto para encontrar o ID correspondente e, em seguida, chamando o método de exclusão com esse ID.
+
+   - **`public boolean delete(int id)`**: Sobrescreve o método `delete` para garantir que a exclusão também aconteça no índice indireto, removendo a entrada referente ao ID do índice e do arquivo.
+
+   - **`public void list()`**: Exibe todas as categorias armazenadas no índice indireto, permitindo uma visualização dos registros.
+
+   - **`public boolean update(Categoria novaCategoria)`**: Atualiza uma categoria e o índice indireto. Remove a entrada antiga do índice e insere a nova entrada caso o ID permaneça o mesmo, assegurando consistência entre o arquivo e o índice.
+   - **`public List<Categoria> readAll()`**: Lê todas as categorias do arquivo e armazena em uma lista. Retorna a lista.
+
+---
+
+### Classe `ArquivoTarefa`
+
+A classe `ArquivoTarefa` gerencia a manipulação dos dados das tarefas e implementa um índice indireto para acesso eficiente às tarefas pelo ID da categoria.
+
+#### Componentes da Classe
+
+1. **Campos**
+   - **`Arquivo<Tarefa> arq_tarefa`**: Referência para o arquivo de tarefas.
+   - **`ArvoreBMais<ParIdId> indice_indireto_id`**: Índice indireto para acessar tarefas pelo ID da categoria, implementado como uma Árvore B+.
+
+2. **Construtor**
+   - **`public ArquivoTarefa()`**: Inicializa o arquivo para armazenar tarefas e configura o índice indireto `indice_indireto_id`, utilizando uma Árvore B+ para permitir busca eficiente pelo ID da categoria.
+
+3. **Métodos**
+
+   - **`public int create(Tarefa c)`**: Sobrescreve o método `create` para incluir a inserção no índice indireto, associando o ID da categoria ao ID da tarefa. Após criar a tarefa, adiciona uma entrada no índice indireto.
+   
+   - **`public ArrayList<Tarefa> readAll(int id)`**: Retorna todas as tarefas associadas a uma categoria específica, com base no ID da categoria. Utiliza o índice indireto para buscar todas as tarefas relacionadas ao ID da categoria fornecido.
+
+   - **`public boolean delete(int id)`**: Sobrescreve o método `delete` para garantir que a exclusão ocorra tanto no índice indireto quanto no arquivo, removendo a entrada referente ao ID da tarefa.
+
+   - **`public boolean update(Tarefa novaTarefa)`**: Atualiza uma tarefa e o índice indireto, removendo a entrada antiga e inserindo uma nova entrada no índice caso o ID permaneça o mesmo, assegurando a integridade entre o índice e o arquivo.
+
+---
+
+### Classe `ParIDEndereco`
+
+A classe `ParIDEndereco` representa um par de valores composto por um `id` e um `endereço`, utilizados como chave e valor, respectivamente, em uma estrutura de hash extensível.
+
+#### Componentes da Classe
+
+1. **Campos**
+   - **`int id`**: Chave para o par, representando um identificador único.
+   - **`long endereco`**: Valor associado ao `id`, representando um endereço.
+   - **`short TAMANHO`**: Tamanho em bytes de um registro `ParIDEndereco`, definido como 12 bytes.
+
+2. **Construtores**
+   - **`public ParIDEndereco()`**: Construtor padrão que inicializa o `id` e o `endereco` com valores inválidos (`-1`), indicando que o registro está vazio.
+   - **`public ParIDEndereco(int id, long end)`**: Construtor que recebe o `id` e o `endereco` como parâmetros, permitindo a criação de um registro válido com chave e valor específicos.
+
+3. **Métodos**
+
+   - **`public int getId()`**: Retorna o `id` do registro.
+   
+   - **`public long getEndereco()`**: Retorna o `endereco` do registro.
+   
+   - **`public int hashCode()`**: Retorna o valor de `id` como o hash code do objeto, utilizado em operações de hash extensível.
+
+   - **`public short size()`**: Retorna o tamanho em bytes do registro, determinado pelo campo `TAMANHO`.
+
+   - **`public String toString()`**: Retorna uma representação em formato de `String` do objeto, no formato `"(id; endereco)"`.
+
+   - **`public byte[] toByteArray()`**: Serializa o objeto `ParIDEndereco` para um array de bytes, permitindo armazenamento em disco. Escreve o `id` e o `endereco` no fluxo de dados.
+
+   - **`public void fromByteArray(byte[] ba)`**: Deserializa um array de bytes para inicializar os campos `id` e `endereco` do objeto, permitindo a recuperação do objeto a partir de um armazenamento em bytes.
+
+A classe `ParIDEndereco` é projetada para ser usada em estruturas de hash extensível, oferecendo métodos de serialização e deserialização para suporte ao armazenamento persistente.
+
+---
+
+### Classe `ParIdId`
+
+A classe `ParIdId` representa um par de identificadores inteiros, com foco em manipulação de registros em uma estrutura de Árvore B+.
+
+#### Componentes da Classe
+
+1. **Campos**
+   - **`int id1`**: Primeiro identificador, usado principalmente para classificação e operações de comparação.
+   - **`int id2`**: Segundo identificador, utilizado para complementar o primeiro em comparações.
+   - **`short TAMANHO`**: Tamanho em bytes do registro, fixado em 8 bytes.
+
+2. **Construtores**
+   - **`public ParIdId()`**: Construtor padrão que inicializa ambos os identificadores com `-1`, indicando um registro vazio.
+   - **`public ParIdId(int n1)`**: Construtor que recebe apenas o `id1` e inicializa `id2` com `-1`.
+   - **`public ParIdId(int n1, int n2)`**: Construtor que recebe os dois identificadores como parâmetros, permitindo a criação de um par completo.
+
+3. **Métodos**
+
+   - **`public void setId1(int id)`**: Define o valor do primeiro identificador.
+   - **`public int getId1()`**: Retorna o valor do primeiro identificador.
+   
+   - **`public void setId2(int id)`**: Define o valor do segundo identificador.
+   - **`public int getId2()`**: Retorna o valor do segundo identificador.
+   
+   - **`public ParIdId clone()`**: Cria uma cópia do objeto `ParIdId`.
+   
+   - **`public short size()`**: Retorna o tamanho do registro em bytes.
+   
+   - **`public int compareTo(ParIdId a)`**: Compara dois objetos `ParIdId` primeiro pelo `id1`, e se forem iguais, pelo `id2`. Se `id2` for `-1`, considera os objetos como iguais no segundo identificador.
+   
+   - **`public String toString()`**: Retorna uma representação em formato `String` no estilo `"id1;id2"`.
+
+   - **`public byte[] toByteArray()`**: Serializa o objeto para um array de bytes, com `id1` e `id2`.
+   
+   - **`public void fromByteArray(byte[] ba)`**: Deserializa um array de bytes, atribuindo os valores lidos aos campos `id1` e `id2`.
+
+---
+
+### Classe `ParNomeId`
+
+A classe `ParNomeId` associa um `nome` a um identificador `id`, otimizando o acesso aos registros por nome em uma Árvore B+.
+
+#### Componentes da Classe
+
+1. **Campos**
+   - **`String nome`**: Nome associado ao identificador.
+   - **`int id`**: Identificador numérico único.
+   - **`short TAMANHO`**: Tamanho em bytes do registro, definido como 30 bytes.
+
+2. **Construtores**
+   - **`public ParNomeId()`**: Construtor padrão que inicializa o `nome` com uma string vazia e `id` com `-1`.
+   - **`public ParNomeId(String n)`**: Construtor que recebe um `nome` e define `id` como `-1`.
+   - **`public ParNomeId(String n, int i)`**: Construtor que recebe `nome` e `id`. Verifica o tamanho do nome, lançando exceção se exceder 26 bytes.
+
+3. **Métodos**
+
+   - **`public void setId(int id)`**: Define o valor de `id`.
+   - **`public int getId()`**: Retorna o valor de `id`.
+   
+   - **`public void setNome(String s)`**: Define o valor de `nome`.
+   - **`public String getNome()`**: Retorna o valor de `nome`.
+   
+   - **`public ParNomeId clone()`**: Cria uma cópia do objeto `ParNomeId`.
+   
+   - **`public short size()`**: Retorna o tamanho do registro em bytes.
+   
+   - **`public int compareTo(ParNomeId a)`**: Compara dois objetos `ParNomeId` pelo `nome`, usando uma versão normalizada que remove acentuação e converte para minúsculas.
+   
+   - **`public String toString()`**: Retorna uma representação em `String` no formato `"id) nome"`.
+
+   - **`public byte[] toByteArray()`**: Serializa o objeto para um array de bytes, armazenando `nome` em um array fixo de 26 bytes e o `id`.
+   
+   - **`public void fromByteArray(byte[] ba)`**: Deserializa um array de bytes para preencher os campos `nome` e `id`.
+   
+   - **`private static String strnormalize(String str)`**: Método privado para normalizar `nome`, removendo acentuação e convertendo para minúsculas, facilitando comparações insensíveis a acentos.
+
 ---
 
 ### Experiência de Desenvolvimento
@@ -321,8 +583,6 @@ A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. 
 
 ---
 
-
----
 ### Perguntas finais
 
 - O CRUD (com índice direto) de categorias foi implementado?
@@ -334,7 +594,7 @@ A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. 
 - Há uma árvore B+ que registre o relacionamento 1:N entre tarefas e categorias?
   > Sim.
 - É possível listar as tarefas de uma categoria?
-  >
+  > Sim.
 - A inclusão da categoria em uma tarefa se limita às categorias existentes?
   > Sim.
 - O trabalho está funcionando corretamente?
@@ -343,7 +603,7 @@ A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. 
   > Sim.
 - O trabalho é original e não a cópia de um trabalho de outro grupo?
   > Sim.
----
+
 ---
 ## TP3
 ---
