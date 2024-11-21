@@ -8,10 +8,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Tarefa implements Registro {
     private int id;
     private int idCategoria;
+    private ArrayList<Integer> idRotulos;
     private String nome;
     private LocalDate dataCriacao;
     private LocalDate dataConclusao;
@@ -37,6 +39,7 @@ public class Tarefa implements Registro {
         this.dataConclusao = dConc;
         this.status = s;
         this.prioridade = p;
+        this.idRotulos = new ArrayList<Integer>();
     }
 
     // Getter e Setter para id
@@ -46,6 +49,10 @@ public class Tarefa implements Registro {
     // Getter e Setter para idCategoria
     public int getIdCategoria() { return this.idCategoria; }
     public void setIdCategoria(int idCategoria) { this.idCategoria = idCategoria; }
+
+    // Getter e Setter para idCategoria
+    public ArrayList<Integer> getIdRotulos() { return this.idRotulos; }
+    public void setIdRotulos(ArrayList<Integer> idRotulos) { this.idRotulos = idRotulos; }
 
     // Getter e Setter para nome
     public String getNome() { return this.nome; }
@@ -78,12 +85,17 @@ public class Tarefa implements Registro {
         DataOutputStream dos = new DataOutputStream(baos);
 
         dos.writeInt(this.id);
-        dos.writeInt(this.idCategoria);
         dos.writeUTF(this.nome);
         dos.writeInt((int) this.dataCriacao.toEpochDay());
         dos.writeInt((int) this.dataConclusao.toEpochDay());
         dos.writeByte(this.status.getValue());
         dos.writeByte(this.prioridade.getValue());
+        //Chaves Estrangeiras
+        dos.writeInt(this.idCategoria);
+        dos.writeInt(this.idRotulos.size());
+        for(int i=0;i<this.idRotulos.size();i++){
+            dos.writeInt(this.idRotulos.get(i));
+        }
 
         return baos.toByteArray();
     }
@@ -94,16 +106,19 @@ public class Tarefa implements Registro {
         DataInputStream dis = new DataInputStream(bais);
 
         this.id = dis.readInt();
-        this.idCategoria = dis.readInt();
         this.nome = dis.readUTF();
         this.dataCriacao = LocalDate.ofEpochDay(dis.readInt());
         this.dataConclusao = LocalDate.ofEpochDay(dis.readInt());
-
         byte statusByte = dis.readByte();
         this.status = Status.fromByte(statusByte);
-        
         byte prioridadeByte = dis.readByte();
         this.prioridade = Prioridade.fromByte(prioridadeByte);
+        //Chaves Estrangeiras
+        this.idCategoria = dis.readInt();
+        int tamanho = dis.readInt();
+        for(int i=0;i<tamanho;i++){
+            this.idRotulos.add(dis.readInt());
+        }
     }
 
     // Representacao em string da Tarefa

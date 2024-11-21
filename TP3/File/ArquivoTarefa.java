@@ -4,21 +4,27 @@ import Entidades.*;
 import java.util.ArrayList;
 
 public class ArquivoTarefa extends Arquivo<Tarefa> {
-    Arquivo<Tarefa> arq_tarefa;  // Referência para o arquivo de tarefas
     ArvoreBMais<ParIdId> indice_indireto_id;  // Índice indireto para acessar tarefas por ID da categoria
+    ArvoreBMais<ParIDRotulocID> indice_invertido_id;
 
     // Construtor da classe ArquivoTarefa
     public ArquivoTarefa() throws Exception {
         super("Tarefas", Tarefa.class.getConstructor());
         // Inicializa o índice indireto utilizando uma Árvore B+
         indice_indireto_id = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5, "./BaseDeDados/indice_indireto_id.btree.db");
+        indice_invertido_id = new ArvoreBMais<>(ParIDRotulocID.class.getConstructor(), 5,"./BaseDeDados/indice_invertido_id.btree.db");
     }
 
     // Sobrescreve o método create para incluir a inserção no índice indireto
     @Override
     public int create(Tarefa c) throws Exception {
         int id = super.create(c);
+        c.setId(id);
         indice_indireto_id.create(new ParIdId(c.getIdCategoria(), id));  // Atualiza o índice indireto
+        ArrayList<Integer> idRotulos = c.getIdRotulos();
+        for(int i=0; i<idRotulos.size(); i++){
+            indice_invertido_id.create(new ParIDRotulocID(idRotulos.get(i), id));
+        }
         return id;
     }
 
@@ -39,6 +45,7 @@ public class ArquivoTarefa extends Arquivo<Tarefa> {
         }
         return t;  // Retorna a lista de tarefas
     }
+
 
     // Sobrescreve o método delete para excluir também do índice indireto
     public boolean delete(int id) throws Exception {
