@@ -4,8 +4,10 @@ import Interface.Registro;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 
 public class Arquivo<T extends Registro> {
+
     final int TAM_CABECALHO = 4;  // Tamanho do cabeçalho do arquivo
     RandomAccessFile arquivo;  // Referência para o arquivo binário
     String nomeArquivo;  // Nome do arquivo
@@ -15,25 +17,27 @@ public class Arquivo<T extends Registro> {
     // Construtor da classe Arquivo, recebendo o nome do arquivo e o construtor dos objetos
     public Arquivo(String na, Constructor<T> c) throws Exception {
         // Cria o diretório BaseDeDados, caso não exista
-        File d = new File(".\\BaseDeDados");
-        if (!d.exists())
+        File d = new File("./BaseDeDados");
+        if (!d.exists()) {
             d.mkdir();
+        }
 
         // Define o nome do arquivo e inicializa variáveis
-        this.nomeArquivo = ".\\BaseDeDados\\" + na + ".db";
+        this.nomeArquivo = "./BaseDeDados/" + na + ".db";
         this.construtor = c;
         arquivo = new RandomAccessFile(this.nomeArquivo, "rw");
 
         // Caso o arquivo esteja vazio, escreve o cabeçalho inicial (valor 0)
-        if (arquivo.length() < TAM_CABECALHO)
+        if (arquivo.length() < TAM_CABECALHO) {
             arquivo.writeInt(0);
+        }
 
         // Inicializa o índice direto utilizando Hash Extensível
         indiceDireto = new HashExtensivel<>(
                 ParIDEndereco.class.getConstructor(),
                 4,
-                ".\\BaseDeDados\\" + na + ".hash_d.db",
-                ".\\BaseDeDados\\" + na + ".hash_c.db");
+                "./BaseDeDados/" + na + ".hash_d.db",
+                "./BaseDeDados/" + na + ".hash_c.db");
     }
 
     // Método para criar um novo registro no arquivo
@@ -80,12 +84,51 @@ public class Arquivo<T extends Registro> {
                 b = new byte[tamanho];
                 arquivo.read(b);
                 obj.fromByteArray(b);
-                if (obj.getId() == id)
+                if (obj.getId() == id) {
                     return obj;  // Retorna o objeto lido
-            }
+
+                            }}
         }
 
         return null;  // Retorna null caso o registro não seja encontrado
+    }
+
+    // Retornar todos os registros
+    public ArrayList<T> readAll() {
+        ArrayList<T> objects = new ArrayList<>();
+        try {
+            long pos = TAM_CABECALHO; // Ignora o cabecalho inicial
+            if (TAM_CABECALHO + 1 >= arquivo.length()) {
+                System.err.println("Arquivo vazio");
+                return objects;
+            }
+
+            // Percorre todo o arquivo
+            while (pos < arquivo.length()) {
+                arquivo.seek(pos);
+
+                // Ler o metadado
+                byte lapide = arquivo.readByte();
+                Short arq = arquivo.readShort();
+
+                // Se nao esta excluído
+                if (lapide == ' ') {
+                    byte[] array = new byte[arq];
+                    arquivo.read(array);
+
+                    T obj = construtor.newInstance();
+                    obj.fromByteArray(array); // Reconstroi o objeto a partir do array de bytes
+                    objects.add(obj);
+                    pos = arquivo.getFilePointer();
+                } else {
+                    pos = arquivo.getFilePointer() + arq;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao listar os registros.");
+        }
+
+        return objects;
     }
 
     // Método para excluir um registro a partir do ID

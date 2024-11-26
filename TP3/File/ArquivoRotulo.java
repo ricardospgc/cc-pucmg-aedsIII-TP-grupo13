@@ -1,132 +1,133 @@
 package File;
 
 import Entidades.*;
-import java.io.File;
-
 import java.util.ArrayList;
 
 public class ArquivoRotulo extends Arquivo<Rotulo> {
     ArvoreBMais<ParRotuloId> arvoreB;
 
-    /* Criando o Arquivo de Rotulo */
+    // Criando o arquivo de rótulo
     public ArquivoRotulo()throws Exception{
-        super(Rotulo.class.getConstructor(), "ArquivoRotulo");
+        super("Rotulo", Rotulo.class.getConstructor());
         try{
-            arvoreB = new ArvoreBMais<>(ParRotuloId.class.getConstructor(), 5, "./BaseDeDado/ArvoresRotulos");
+            arvoreB = new ArvoreBMais<>(ParRotuloId.class.getConstructor(), 5, "./BaseDeDados/ArvoresRotulos.db");
         }catch(Exception e){
             System.out.println(e.getMessage());
             throw new Exception();
         }
     }
 
-    /* CRUD DE Rotulo */
-
-    /* Método Publico para a criação de Rotulo. Retorna a Rotulo criada */
+    // Método público para a criação de rótulo. Retorna o ID do rótulo criado
     public int create(String nomeRotulo)throws Exception{
-        Rotulo Rotulo = new Rotulo(nomeRotulo);
-        return this.create1(Rotulo);
+        Rotulo rotulo = new Rotulo(nomeRotulo);
+        return this.create1(rotulo);
     }
     
-    /* Método Privado da criação de Rotulo. Retorna o ID da Rotulo */
-    private int create1(Rotulo Rotulo) throws Exception{
-        int id = super.create(Rotulo);
-        Rotulo.setId(id);
+    // Método privado para a criação de rótulo. Retorna o ID do rótulo criado
+    private int create1(Rotulo rotulo) throws Exception{
+        int id = super.create(rotulo); // Cria o rótulo no arquivo base e obtém o ID
+        rotulo.setId(id); // Define o ID no objeto rótulo
         try{
-            arvoreB.create(new ParRotuloId(Rotulo.getNome(),Rotulo.getId()));
+            arvoreB.create(new ParRotuloId(rotulo.getNome(),rotulo.getId())); // Adiciona o rótulo ao índice
         }catch(Exception e){
-            System.out.println("Erro na criação de uma nova Rotulo");
+            System.out.println("Erro na criação de um novo rótulo");
             System.out.println(e.getMessage());
         }
         return id;
     } 
     
-    /* Método de leitura listando as Tarefas da Rotulo passada como parametro. Retorna as Tarefas */
+    // Método para leitura de tarefas associadas a um rótulo. Retorna as tarefas encontradas
     public ArrayList<Tarefa> read(String nomeRotulo)throws Exception{
         ArrayList<Tarefa> t = new ArrayList<>();
         ArquivoTarefa tarefas = new ArquivoTarefa();
         try{
-            ArrayList<ParRotuloId> Rotulo = arvoreB.read(new ParRotuloId(nomeRotulo));
+            ArrayList<ParRotuloId> rotulo = arvoreB.read(new ParRotuloId(nomeRotulo));
         
-            /*Se a Rotulo estiver vazia, incapaz de fazer o método*/
-            if(Rotulo.isEmpty()){
-                throw new Exception("Rotulo inxistente");
+            // Verifica se o rótulo existe
+            if(rotulo.isEmpty()){
+                throw new Exception("Rótulo inexistente");
             }
-            t = tarefas.read(Rotulo.get(0));   
+            t = tarefas.read(rotulo.get(0)); // Lê as tarefas associadas ao rótulo
         }catch(Exception e){
-            System.out.println("Erro na leitura do Arquivo");
+            System.out.println("Erro na leitura do arquivo");
             System.out.println(e.getMessage());
         }
         return t;
     }
 
-    /* Método de atualização do nome de uma Rotulo. Retornando se foi feito com Sucesso ou Não. */
-    public boolean update(String nomeRotulo, String novaRotulo)throws Exception{
-        Rotulo eti = new Rotulo(novaRotulo);
+    // Método de atualização do nome de um rótulo. Retorna true se a atualização for bem-sucedida
+    public boolean update(String nomerotulo, String novarotulo)throws Exception{
+        Rotulo rt = new Rotulo(novarotulo); // Cria um novo objeto rótulo com o nome atualizado
         
         try{
-            ArrayList<ParRotuloId> Rotulo = arvoreB.read(new ParRotuloId(nomeRotulo));
-            /*Se a Rotulo estiver vazia, incapaz de fazer o método*/
-            if(Rotulo.isEmpty()){
-                throw new Exception("Rotulo Inexistente");
-            }
-            eti.setId(Rotulo.get(0).getId());
+            ArrayList<ParRotuloId> rotulo = arvoreB.read(new ParRotuloId(nomerotulo));
             
-            if(super.update(eti)){
-                System.out.println("Atualizo");
+            // Verifica se o rótulo existe
+            if(rotulo.isEmpty()){
+                throw new Exception("Rótulo inexistente");
+            }
+            rt.setId(rotulo.get(0).getId()); // Atualiza o ID do rótulo
+            
+            if(super.update(rt)){ // Atualiza o rótulo no arquivo base
+                System.out.println("Atualização realizada");
             }
 
-            
-            arvoreB.delete(Rotulo.get(0));
-            arvoreB.create(new ParRotuloId(eti.getNome(), eti.getId()));
+            // Remove o rótulo antigo do índice e adiciona o novo
+            arvoreB.delete(rotulo.get(0));
+            arvoreB.create(new ParRotuloId(rt.getNome(), rt.getId()));
         }
         catch (Exception e){
-            System.out.println("Erro no update do Arquivo");
+            System.out.println("Erro na atualização do arquivo");
             System.out.println(e.getMessage());
         }
         
         return true;
     }
 
-    /* Método de Deletar Rotulo. Procura pelo nome da Rotulo e a deleta. Retorna booleano */
-    public boolean delete(String nomeRotulo) throws Exception{
+    // Método para deletar um rótulo. Retorna true se a exclusão for bem-sucedida
+    public boolean delete(String nomerotulo) throws Exception{
         try{
-            ArrayList<ParRotuloId> eti = arvoreB.read(new ParRotuloId(nomeRotulo));
+            ArrayList<ParRotuloId> rotulo = arvoreB.read(new ParRotuloId(nomerotulo));
 
-            /*Se a Rotulo estiver vazia, incapaz de fazer o método*/
-            if(eti.isEmpty()){
-                throw new Exception("Rotulo Inesistente");
+            // Verifica se o rótulo existe
+            if(rotulo.isEmpty()){
+                throw new Exception("Rótulo inexistente");
             }
 
+            // Verifica se existem tarefas associadas ao rótulo
             ArquivoTarefa tarefas = new ArquivoTarefa();
-            ArrayList<Tarefa> t = tarefas.read(eti.get(0));
+            ArrayList<Tarefa> t = tarefas.read(rotulo.get(0));
     
             if(!t.isEmpty())
-                throw new Exception("Tarefas existentes dentro desta Rotulo");
+                throw new Exception("Existem tarefas associadas a este rótulo");
             
-            return super.delete(eti.get(0).getId()) ? arvoreB.delete(eti.get(0)) : false;
+            // Remove o rótulo do arquivo base e do índice
+            return super.delete(rotulo.get(0).getId()) ? arvoreB.delete(rotulo.get(0)) : false;
         }catch(Exception e){
-            System.out.println("Erro em deletar");
+            System.out.println("Erro ao deletar");
             System.out.println(e.getMessage());
         }
         return false;
     }
 
-    /* Listando as Rotulo */
+    // Lista todos os rótulos. Retorna um ArrayList com os rótulos encontrados
     public ArrayList<Rotulo> listar() throws Exception{
-        ArrayList<Rotulo> Rotulos = new ArrayList<>();
+        ArrayList<Rotulo> rotulos = new ArrayList<>();
         try{
-             Rotulos = super.list();
+            rotulos = super.readAll(); // Lê todos os rótulos do arquivo base
 
-            if(Rotulos.isEmpty())
-                throw new Exception("Rotulo ainda não foram criadas");
+            // Verifica se existem rótulos
+            if(rotulos.isEmpty())
+                throw new Exception("Nenhum rótulo foi criado");
             
-            for(int i = 0; i<Rotulos.size(); i++){
-                System.out.println("Indice: " + Rotulos.get(i).getId() + " Nome da Rotulo: " + Rotulos.get(i).getNome());
+            // Exibe os rótulos encontrados
+            for(int i = 0; i<rotulos.size(); i++){
+                System.out.println("Índice: " + rotulos.get(i).getId() + " Nome do rótulo: " + rotulos.get(i).getNome());
             }
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
-        return Rotulos;
+        return rotulos;
     }
 
 }

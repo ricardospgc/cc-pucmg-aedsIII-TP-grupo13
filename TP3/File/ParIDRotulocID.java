@@ -9,8 +9,8 @@ import java.io.IOException;
 
 public class ParIDRotulocID implements RegistroArvoreBMais<ParIDRotulocID>{
       
-    /* Conexão entre ID de Categorias e ID de Tarefa */
-    private int idCategoria;
+    /* Conexão entre ID de Rotulos e ID de Tarefa */
+    private int idRotulo;
     private int idTarefa;
     private final short TAMANHO = 8;
     
@@ -18,13 +18,13 @@ public class ParIDRotulocID implements RegistroArvoreBMais<ParIDRotulocID>{
         this(-1,-1);
     }
 
-    public ParIDRotulocID(int idCategoria){
-        this(idCategoria, -1);
+    public ParIDRotulocID(int idRotulo){
+        this(idRotulo, -1);
     }
 
-    public ParIDRotulocID(int idCategoria, int idTarefa){
+    public ParIDRotulocID(int idRotulo, int idTarefa){
         try{
-            this.idCategoria = idCategoria;
+            this.idRotulo = idRotulo;
             this.idTarefa = idTarefa;
         }catch(Exception e){
             e.printStackTrace();
@@ -32,9 +32,9 @@ public class ParIDRotulocID implements RegistroArvoreBMais<ParIDRotulocID>{
     }
 
     /* SET's */
-    public void setidCategoria(int idCategoria){
+    public void setidRotulo(int idRotulo){
         
-        this.idCategoria = idCategoria;
+        this.idRotulo = idRotulo;
     } 
     
     public void setidTarefa(int idTarefa){
@@ -45,9 +45,9 @@ public class ParIDRotulocID implements RegistroArvoreBMais<ParIDRotulocID>{
     /* Fim dos Set's */
     
     /* GET's */
-    public int getidCategoria(){
+    public int getidRotulo(){
         
-        return idCategoria;
+        return idRotulo;
     } 
     
     public int getidTarefa(){
@@ -58,9 +58,8 @@ public class ParIDRotulocID implements RegistroArvoreBMais<ParIDRotulocID>{
     /* Fim dos GET's */
     
     @Override
-
     public ParIDRotulocID clone(){
-        return new ParIDRotulocID(this.idCategoria, this.idTarefa);
+        return new ParIDRotulocID(this.idRotulo, this.idTarefa);
     }
 
     public short size(){
@@ -68,21 +67,21 @@ public class ParIDRotulocID implements RegistroArvoreBMais<ParIDRotulocID>{
     }
 
     public int compareTo(ParIDRotulocID a){
-        if(this.idCategoria != a.idCategoria){
-            return this.idCategoria - a.idCategoria;
+        if(this.idRotulo != a.idRotulo){
+            return this.idRotulo - a.idRotulo;
         }else{
             return this.idTarefa == -1 ? 0 : this.idTarefa - a.idTarefa;
         }
     }
 
     public String toString(){
-        return String.format("%3d", this.idCategoria) + ";" + String.format("%-3d", this.idTarefa);
+        return String.format("%3d", this.idRotulo) + ";" + String.format("%-3d", this.idTarefa);
     }
 
     public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
-        dos.writeInt(this.idCategoria);
+        dos.writeInt(this.idRotulo);
         dos.writeInt(this.idTarefa);
         return baos.toByteArray();
     }
@@ -90,7 +89,7 @@ public class ParIDRotulocID implements RegistroArvoreBMais<ParIDRotulocID>{
     public void fromByteArray(byte[] ba) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);
-        this.idCategoria = dis.readInt();
+        this.idRotulo = dis.readInt();
         this.idTarefa = dis.readInt();
     }
 

@@ -23,7 +23,7 @@ public class MenuCategorias {
         do {
             System.out.println("\nAEDsIII");
             System.out.println("-------");
-            System.out.println("- Inicio Categorias");
+            System.out.println("> Inicio > Categorias");
             System.out.println("1 - Buscar");
             System.out.println("2 - Incluir");
             System.out.println("3 - Alterar");
@@ -53,7 +53,7 @@ public class MenuCategorias {
                     excluirCategoria();  // Chama o método para excluir uma categoria
                     break;
                 case 5:
-                    arqCategoria.list();  // Chama o método para listar todas as categorias
+                    arqCategoria.listarCategoria();  // Chama o método para listar todas as categorias
                     break;
                 case 0:
                     break;

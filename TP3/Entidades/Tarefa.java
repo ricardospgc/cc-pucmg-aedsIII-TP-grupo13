@@ -41,6 +41,27 @@ public class Tarefa implements Registro {
         this.prioridade = p;
         this.idRotulos = new ArrayList<Integer>();
     }
+    // Construtor completo
+    public Tarefa(int idCat, String nome, LocalDate dCria, LocalDate dConc, Status s, Prioridade p, ArrayList<Integer> idRotulos) {
+        this.idCategoria = idCat;
+        this.nome = nome;
+        this.dataCriacao = dCria;
+        this.dataConclusao = dConc;
+        this.status = s;
+        this.prioridade = p;
+        this.idRotulos = new ArrayList<>(idRotulos);
+    }
+    public Tarefa(int idTf, int idCat, String nome, LocalDate dCria, LocalDate dConc, Status s, Prioridade p, ArrayList<Integer> idRotulos) {
+        this.id = idTf;
+        this.idCategoria = idCat;
+        this.nome = nome;
+        this.dataCriacao = dCria;
+        this.dataConclusao = dConc;
+        this.status = s;
+        this.prioridade = p;
+        this.idRotulos = new ArrayList<>(idRotulos);
+    }
+
 
     // Getter e Setter para id
     public int getId() { return this.id; }

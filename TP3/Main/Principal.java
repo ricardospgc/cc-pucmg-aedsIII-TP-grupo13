@@ -3,8 +3,8 @@ package Main;
 import java.util.Scanner;
 
 /*
- * NA PASTA TP2, RODAR OS SEGUINTES COMANDOS NO TERMINAL:
- * javac -d NULL File/*.java Entidades/*.java Enums/*.java Interface/*.java Main/*.java
+ * NA PASTA TP3, RODAR OS SEGUINTES COMANDOS NO TERMINAL:
+ * javac -d NULL File/*.java Entidades/*.java Enums/*.java Interface/*.java Main/*.java Indices/*.java
  * java -cp NULL Main.Principal
  */
 
@@ -24,6 +24,7 @@ public class Principal {
                 System.out.println("-------");
                 System.out.println("1 - Categorias");
                 System.out.println("2 - Tarefas");
+                System.out.println("3 - Rotulos");
                 System.out.println("0 - Sair");
                 System.out.print("Opcao: ");
 
@@ -40,6 +41,9 @@ public class Principal {
                         break;
                     case 2:
                         (new MenuTarefas()).menu();  // Chama o menu de tarefas
+                        break;
+                    case 3:
+                        (new MenuRotulos()).menu();  // Chama o menu de rótulos
                         break;
                     case 0:
                         break;
