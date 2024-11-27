@@ -15,7 +15,9 @@ public class ParRotuloId implements RegistroArvoreBMais<ParRotuloId>{
     private int id;
     private short TAMANHO = 30;
   
-    /* Construtores */
+    /* 
+      Construtores 
+    */
     public ParRotuloId() throws Exception {
       this("", -1);
     }
@@ -32,7 +34,6 @@ public class ParRotuloId implements RegistroArvoreBMais<ParRotuloId>{
     }
 
     /* GET's */
-
     public String getNome(){
         return this.nome;
     }
@@ -78,6 +79,7 @@ public class ParRotuloId implements RegistroArvoreBMais<ParRotuloId>{
       return this.nome + ";" + String.format("%-3d", this.id);
     }
   
+    /* Conversão para Array de Bytes */
     public byte[] toByteArray() throws IOException {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       DataOutputStream dos = new DataOutputStream(baos);
@@ -97,6 +99,7 @@ public class ParRotuloId implements RegistroArvoreBMais<ParRotuloId>{
       return baos.toByteArray();
     }
   
+    /* Preenchimento a partir de Array de Bytes */
     public void fromByteArray(byte[] ba) throws IOException {
       ByteArrayInputStream bais = new ByteArrayInputStream(ba);
       DataInputStream dis = new DataInputStream(bais);
@@ -106,6 +109,7 @@ public class ParRotuloId implements RegistroArvoreBMais<ParRotuloId>{
       this.id = dis.readInt();
     }
   
+    /* Transforma a String */
     public static String transforma(String str) {
       String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
       Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");

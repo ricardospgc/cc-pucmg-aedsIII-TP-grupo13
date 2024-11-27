@@ -78,12 +78,13 @@ public class MenuTarefas {
 
     // Buscar uma tarefa, tendo que pesquisar pela categoria dela primeiro para acessar suas tarefas e depois fazer a busca
     public void buscarTarefa() {
-        String nome_categoria;
-        System.out.println("\nNome da categoria da tarefa: ");
-        nome_categoria = sc.nextLine(); // Lê o nome da categoria
+        System.out.println("\nDigite o NOME DA CATEGORIA da tarefa: ");
+        arqCategorias.listarCategorias();  // Lista todas as categorias
+        System.out.print("\n > ");
+        String nomeCategoria = sc.nextLine(); // Lê o nome da categoria
 
         try {
-            Categoria c = arqCategorias.read(nome_categoria); // Busca a categoria pelo nome
+            Categoria c = arqCategorias.read(nomeCategoria); // Busca a categoria pelo nome
             ArrayList<Tarefa> t = arqTarefas.readAll(c.getId()); // Lê todas as tarefas da categoria
 
             if (t.isEmpty()) {
@@ -94,19 +95,17 @@ public class MenuTarefas {
                 System.out.println((i + 1) + ") " + t.get(i).getNome());
             }
 
-            System.out.print("\nNome da tarefa: ");
-            String nome_tarefa = sc.nextLine();
-
-            for (Tarefa tmp : t) // Itera sobre as tarefas
-            {
-                if (tmp.getNome().equals(nome_tarefa)) // Verifica se a tarefa corresponde ao nome fornecido
-                {
+            System.out.print("\nID DA TAREFA: ");
+            int idTarefa = sc.nextInt();
+            
+            for (Tarefa tmp : t){ // Itera sobre as tarefas
+                if (tmp.getId() == idTarefa) { // Verifica se a tarefa corresponde ao nome fornecido     
                     System.out.println("Tarefa encontrada: ");
                     System.out.println(tmp);
                     return;
                 }
             }
-            System.out.println("Tarefa nao econtrada nesta categoria!");
+            System.out.println("Id invalido!");
         } catch (Exception e) {
             System.err.println("Erro no sistema");
         }
@@ -154,7 +153,7 @@ public class MenuTarefas {
             try {
                 catEscolhida = true;
 
-                arqCategorias.listarCategoria();  // Lista todas as categorias
+                arqCategorias.listarCategorias();  // Lista todas as categorias
                 System.out.print("\n > ");
                 categoria = sc.nextLine();
 
@@ -168,15 +167,15 @@ public class MenuTarefas {
         int newRotulo = 1;
         ArrayList<Rotulo> rotulo = new ArrayList<>();
         ArrayList<Integer> posRotulosLista = new ArrayList<>();
-        System.out.println("Deseja adicionar alguma Rotulo ? (1 para sim, 0 para não)");
+        System.out.println("Digite o INDICE DO ROTULO que deseja adicionar a tarefa (0 para nenhum)");
         newRotulo = sc.nextInt();
-        while (newRotulo == 1) {
-            System.out.println("Digite o índice da Rotulo que deseja adicionar a esta tarefa");
+        while (newRotulo != 0) {
+            System.out.println("");
             System.out.println();
             rotulo = arqRotulos.listar();
             System.out.println();
-            posRotulosLista.add(sc.nextInt() - 1);
-            System.out.println("Deseja adicionar mais Rotulos? (1 para sim, 0 para não)");
+            posRotulosLista.add(newRotulo - 1);
+            System.out.println("Digite o INDICE DO ROTULO que deseja adicionar a tarefa (0 para fim)");
             newRotulo = sc.nextInt();
         }
         ArrayList<Integer> aux = new ArrayList<>();
@@ -215,7 +214,7 @@ public class MenuTarefas {
             }
 
             while (numeroTarefa < 0 || numeroTarefa > tarefas.size()) {
-                System.out.println("Digite o número da Tarefa que deseja atualizar\nObs: digite 0 para cancelar");
+                System.out.println("Digite o ID DA TAREFA que deseja atualizar (0 para cancelar)");
                 try {
                     numeroTarefa = Integer.valueOf(sc.nextLine());
 
@@ -294,7 +293,7 @@ public class MenuTarefas {
                 }
             }
             while (numeroTarefa < 0 || numeroTarefa > tarefas.size()) {
-                System.out.println("Digite o número da Tarefa que deseja deletar\nObs: digite 0 para cancelar");
+                System.out.println("Digite o ID DA TAREFA que deseja deletar (0 para cancelar)");
                 numeroTarefa = sc.nextInt();
                 if (numeroTarefa < 0 || numeroTarefa > tarefas.size()) {
                     System.out.println("Tarefa não encontrada, tente novamente");
@@ -312,10 +311,10 @@ public class MenuTarefas {
     }
 
     public void listarTarefasPorCategoria() {
-        String nome;
-
-        System.out.print("\nDigite o nome da categoria que deseja ver as tarefas: ");
-        nome = sc.nextLine(); // Lê o nome da categoria
+        System.out.print("\nDigite o NOME DA CATEGORIA que deseja listar as tarefas: ");
+        arqCategorias.listarCategorias();  // Lista todas as categorias
+        System.out.print("\n > ");
+        String nome = sc.nextLine(); // Lê o nome da categoria
 
         if (nome.length() == 0) {
             return; // Se o nome for vazio, retorna
@@ -328,7 +327,7 @@ public class MenuTarefas {
             ArrayList<Tarefa> t = arqTarefas.readAll(id_categoria);
 
             if (t.isEmpty()) {
-                System.out.println("Nao existem tarefas criadas nesta categoria!");
+                System.out.println("Nao existem tarefas nesta categoria!");
             } else {
                 for (int i = 0; i < t.size(); i++) {
                     System.out.println((i + 1) + ") " + t.get(i).getNome());
@@ -342,7 +341,6 @@ public class MenuTarefas {
     public ArrayList<Tarefa> listarTarefas(String termo) throws Exception {
         ArrayList<Tarefa> tarefas = null;
         try {
-
             int numeroTarefa = 1;
             termo = termo.toLowerCase();
             tarefas = arqTarefas.listar(termo);
@@ -395,14 +393,14 @@ public class MenuTarefas {
                 System.out.print("Digite o termo que deseja pesquisar no banco de tarefas: ");
                 termo = sc.nextLine();
                 tarefas = listarTarefas(termo);
-                //System.out.println("Tarefas: " + tarefas.size());
+                System.out.println("Tarefas: " + tarefas.size());
                 if (tarefas == null || tarefas.isEmpty()) {
                     System.out.println("Tarefas nao encontradas");
                     return;
                 }
             }
             while (numeroTarefa < 0 || numeroTarefa > tarefas.size()) {
-                System.out.println("Digite o número da Tarefa que deseja atualizar\nObs: digite 0 para cancelar (favor ignorar a mensagem de erro)");
+                System.out.println("Digite o ID DA TAREFA que deseja atualizar (0 para cancelar)");
                 numeroTarefa = sc.nextInt();
                 if (numeroTarefa < 0 || numeroTarefa > tarefas.size()) {
                     System.out.println("Tarefa não encontrada, tente novamente");

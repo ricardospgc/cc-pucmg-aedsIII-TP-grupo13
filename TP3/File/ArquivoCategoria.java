@@ -4,79 +4,91 @@ import Entidades.*;
 import java.util.ArrayList;
 
 public class ArquivoCategoria extends Arquivo<Categoria> {
+    ArvoreBMais<ParNomeId> indiceNomeId; // Índice B+ para armazenar associações entre nome da categoria e seu ID
 
-    Arquivo<Categoria> arq_categoria; // Arquivo de categorias
-    ArvoreBMais<ParNomeId> indice_indireto_nome; // Índice indireto para armazenar pares (nome_categoria, id_categoria)
-
-    // Construtor que inicializa o arquivo de categorias e o índice indireto
+    /* 
+     * Construtor para inicializar o arquivo de categorias e o índice B+ associado.
+     */
     public ArquivoCategoria() throws Exception {
         super("Categorias", Categoria.class.getConstructor());
-        indice_indireto_nome = new ArvoreBMais<>(
+        indiceNomeId = new ArvoreBMais<>(
                 ParNomeId.class.getConstructor(),
                 5,
-                "./BaseDeDados/indice_indireto_nome.btree.db"
+                "./BaseDeDados/indiceNomeId.btree.db"
         );
     }
 
-    // Cria uma nova categoria e atualiza o índice indireto
+    /* 
+     * Método para criar uma nova categoria e atualizar o índice associado.
+     */
     @Override
-    public int create(Categoria c) throws Exception {
-        int id = super.create(c); // Cria a categoria e obtém o ID
-        indice_indireto_nome.create(new ParNomeId(c.getNome(), id)); // Adiciona ao índice indireto
+    public int create(Categoria categoria) throws Exception {
+        int id = super.create(categoria); // Cria a categoria no arquivo e obtém o ID
+        indiceNomeId.create(new ParNomeId(categoria.getNome(), id)); // Adiciona o nome e ID ao índice
         return id;
     }
 
-    // Lê uma categoria com base no nome
-    public Categoria read(String n) throws Exception {
-        ArrayList<ParNomeId> p = indice_indireto_nome.read(new ParNomeId(n, -1)); // Busca no índice indireto
-        return super.read(p.get(0).getId()); // Lê a categoria usando o ID encontrado
+    /* 
+     * Método para ler uma categoria com base no nome dela.
+     */
+    public Categoria read(String nomeCategoria) throws Exception {
+        ArrayList<ParNomeId> pares = indiceNomeId.read(new ParNomeId(nomeCategoria, -1)); // Busca o par no índice
+        return super.read(pares.get(0).getId()); // Obtém a categoria usando o ID encontrado
     }
 
-    // Deleta uma categoria com base no nome
-    public boolean delete(String n) throws Exception {
-        return delete(read(n).getId()); // Lê o ID da categoria e a deleta
+    /* 
+     * Método para excluir uma categoria usando o nome como referência.
+     */
+    public boolean delete(String nomeCategoria) throws Exception {
+        return delete(read(nomeCategoria).getId()); // Encontra o ID da categoria e a remove
     }
 
-    // Deleta uma categoria com base no ID
+    /* 
+     * Método para excluir uma categoria usando o ID.
+     */
     @Override
-    public boolean delete(int id) throws Exception {
-        boolean result = false;
-        Categoria obj = super.read(id); // Lê a categoria
-        if (obj != null) {
-            if (indice_indireto_nome.delete(new ParNomeId(obj.getNome(), obj.getId()))) // Remove do índice indireto
+    public boolean delete(int idCategoria) throws Exception {
+        boolean sucesso = false;
+        Categoria categoria = super.read(idCategoria); // Lê os dados da categoria
+        if (categoria != null) {
+            if (indiceNomeId.delete(new ParNomeId(categoria.getNome(), categoria.getId()))) // Remove do índice
             {
-                result = super.delete(obj.getId()); // Deleta a categoria
+                sucesso = super.delete(categoria.getId()); // Remove do arquivo
             }
         }
-        return result;
+        return sucesso;
     }
 
-    // Listar todas categorias
-    public void listarCategoria() {
-        ArrayList<Categoria> c = new ArrayList<>();
-        c = super.readAll();
+    /* 
+     * Método para listar todas as categorias armazenadas.
+     */
+    public void listarCategorias() {
+        ArrayList<Categoria> listaCategorias = new ArrayList<>();
+        listaCategorias = super.readAll();
 
-        if (c.isEmpty()) {
-            System.out.println("Nao existem categorias criadas");
+        if (listaCategorias.isEmpty()) {
+            System.out.println("Não existem categorias criadas.");
         } else {
-            System.out.println("\nCategorias criadas: ");
+            System.out.println("\nCategorias criadas:");
 
-            for (int i = 0; i < c.size(); i++) {
-                System.out.println((i + 1) + ") " + c.get(i).getNome());
+            for (int i = 0; i < listaCategorias.size(); i++) {
+                System.out.println((i + 1) + ") " + listaCategorias.get(i).getNome());
             }
         }
     }
 
-    // Atualiza uma categoria e ajusta o índice indireto se necessário
+    /* 
+     * Método para atualizar uma categoria e ajustar o índice caso o nome seja alterado.
+     */
     @Override
     public boolean update(Categoria novaCategoria) throws Exception {
-        Categoria categoriaVelha = read(novaCategoria.getId()); // Lê a categoria atual
-        if (super.update(novaCategoria)) // Atualiza a categoria
+        Categoria categoriaAtual = read(novaCategoria.getId()); // Obtém a categoria antes da atualização
+        if (super.update(novaCategoria)) // Atualiza os dados no arquivo
         {
-            if (novaCategoria.getId() == categoriaVelha.getId()) // Se o ID não mudou
+            if (novaCategoria.getId() == categoriaAtual.getId()) // Se o ID não mudou
             {
-                indice_indireto_nome.delete(new ParNomeId(categoriaVelha.getNome(), categoriaVelha.getId())); // Remove entrada antiga
-                indice_indireto_nome.create(new ParNomeId(novaCategoria.getNome(), novaCategoria.getId())); // Cria entrada nova
+                indiceNomeId.delete(new ParNomeId(categoriaAtual.getNome(), categoriaAtual.getId())); // Remove a entrada antiga
+                indiceNomeId.create(new ParNomeId(novaCategoria.getNome(), novaCategoria.getId())); // Adiciona a nova entrada
             }
             return true;
         }

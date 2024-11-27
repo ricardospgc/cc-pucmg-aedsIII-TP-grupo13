@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 /*
  * NA PASTA TP3, RODAR OS SEGUINTES COMANDOS NO TERMINAL:
- * javac -d NULL File/*.java Entidades/*.java Enums/*.java Interface/*.java Main/*.java Indices/*.java
+ * javac -d NULL File/*.java Entidades/*.java Enums/*.java Interface/*.java Main/*.java IndiceInvertido/*.java
  * java -cp NULL Main.Principal
  */
 
