@@ -288,7 +288,10 @@ A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. 
   > Sim.
 - O trabalho é original e não a cópia de um trabalho de outro grupo?
   > Sim.
+
 ---
+---
+
 ## TP2
 
 Relatório
@@ -605,6 +608,65 @@ A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. 
   > Sim.
 
 ---
+---
 ## TP3
+
+Relatório
+"Descrevam um pouco o esforço. Uma descrição do seu trabalho nas suas próprias palavras. Basicamente, vocês devem responder à seguinte pergunta: O que o trabalho de vocês faz?"
+
+> O trabalho 3 implementa uma Lista Invertida, que permite uma pesquisa de Tarefas baseada nas palavras do seu nome. Além disso, também foi implementada uma relação N:N entre uma nova entidade Rótulo e as Tarefas. Rótulos também receberam o seu próprio CRUD.
+
+> A Lista Invertida recebe palavras chave e retorna uma sequência de respostas possíveis, baseada na frequência de cada palavra, ordenada por proximidade às chaves.
+
+> Os Rótulos são inseridos em uma Árvore B+, que permite operações eficientes. Um Rótulo pode estar associado a diversas tarefas e uma tarefa pode estar relacionada a diversos rótulos, acontecendo então uma relação N:N.
+
+---
+
+### Descrição das Classes e Métodos (referentes ao TP3)
+
+### Classes:
+
+### Classe <NOME>
+
+<DESCRIÇÃO DA CLASSE>
+
+#### Componentes da Classe
+
+1. **Campos**
+  -  **`public void ...`**: <descriçao>
+2. **Construtores**
+  -  **`public void ...`**: <descriçao> 
+3. **Métodos**
+  -  **`public void ...`**: <descriçao>
+---
+
+### Experiência de Desenvolvimento
+"Finalmente, relatem um pouco a experiência de vocês, explicando questões como: Vocês implementaram todos os requisitos? Houve alguma operação mais difícil? 
+Vocês enfrentaram algum desafio na implementação? Os resultados foram alcançados?
+A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. Aqui, a ideia é entender como foi para vocês desenvolver este TP."
+
+> Nessa etapa do desenvolvimento, tivemos muito mais dificuldade em relação às anteriores. Unir a Lista Invertida com o restante das estruturas para pesquisar a partir dos termos foi o ponto que achamos mais complicado. Também não conseguimos implementar completamente as relações N:N para todas as operações.
+> Investimos menos tempo nesse trabalho do que nos anteriores, e por isso o resultado não foi o desejado.
+> Para facilitar a cooperação, usamos muito a extensão Live Share do Visual Studio Code, que permite aos participantes acompanharem as mudanças em tempo real. Com isso, discutimos as dificuldades e diferentes estratégias.
+
+---
+
+### Perguntas finais
+
+- O índice invertido com os termos das tarefas foi criado usando a classe ListaInvertida?
+  > Sim.
+- O CRUD de rótulos foi implementado?
+  > Sim.
+- No arquivo de tarefas, os rótulos são incluídos, alterados e excluídos em uma árvore B+?
+  > Parcialmente.
+- É possível buscar tarefas por palavras usando o índice invertido?
+  > Não.
+- É possível buscar tarefas por rótulos usando uma árvore B+?
+  > Não.
+- O trabalho está completo?
+  > Não.
+- O trabalho é original e não a cópia de um trabalho de um colega?
+  > Sim.
+
 ---
 ## TP4
