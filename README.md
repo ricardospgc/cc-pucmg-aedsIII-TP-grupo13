@@ -624,21 +624,195 @@ Relatório
 
 ### Descrição das Classes e Métodos (referentes ao TP3)
 
-### Classes:
+### Classe `ParNomeId`
 
-### Classe <NOME>
-
-<DESCRIÇÃO DA CLASSE>
+A classe `ParNomeId` associa um `nome` a um identificador `id`, otimizando o acesso aos registros por nome em uma Árvore B+.
 
 #### Componentes da Classe
 
 1. **Campos**
-  -  **`public void ...`**: <descriçao>
+   - **`String nome`**: Nome associado ao identificador.
+   - **`int id`**: Identificador numérico único.
+   - **`short TAMANHO`**: Tamanho em bytes do registro, definido como 30 bytes.
+
 2. **Construtores**
-  -  **`public void ...`**: <descriçao> 
+   - **`public ParNomeId()`**: Construtor padrão que inicializa o `nome` com uma string vazia e `id` com `-1`.
+   - **`public ParNomeId(String n)`**: Construtor que recebe um `nome` e define `id` como `-1`.
+   - **`public ParNomeId(String n, int i)`**: Construtor que recebe `nome` e `id`. Verifica o tamanho do nome, lançando exceção se exceder 26 bytes.
+
 3. **Métodos**
-  -  **`public void ...`**: <descriçao>
+   - **`public void setId(int id)`**: Define o valor de `id`.
+   - **`public int getId()`**: Retorna o valor de `id`.
+   - **`public void setNome(String s)`**: Define o valor de `nome`.
+   - **`public String getNome()`**: Retorna o valor de `nome`.
+   - **`public ParNomeId clone()`**: Cria uma cópia do objeto `ParNomeId`.
+   - **`public short size()`**: Retorna o tamanho do registro em bytes.
+   - **`public int compareTo(ParNomeId a)`**: Compara dois objetos `ParNomeId` pelo `nome`, usando uma versão normalizada que remove acentuação e converte para minúsculas.
+   -
+
 ---
+
+### Classe `ArquivoRotulo`
+
+A classe `ArquivoRotulo` gerencia a criação, leitura, atualização e exclusão de registros de rótulos, utilizando um índice B+ para otimizar o acesso aos rótulos.
+
+#### Componentes da Classe
+
+1. **Campos**
+   - **`ArvoreBMais<ParRotuloId> indiceRotulos`**: Índice B+ utilizado para associar rótulos a identificadores (`id`).
+
+2. **Construtores**
+   - **`public ArquivoRotulo()`**: Construtor que inicializa o arquivo de rótulos e a estrutura de índice B+ associada. Cria o arquivo e o índice, tratando exceções.
+
+3. **Métodos**
+   - **`public int create(String nomeRotulo)`**: Cria um novo rótulo com o nome fornecido e retorna o ID do rótulo criado.
+   - **`private int createInterno(Rotulo rotulo)`**: Cria o rótulo no arquivo base e atualiza o índice B+ com o novo rótulo.
+   - **`public ArrayList<Tarefa> readTarefasPorRotulo(String nomeRotulo)`**: Retorna uma lista de tarefas associadas ao rótulo especificado.
+   - **`public boolean update(String nomeAntigo, String nomeNovo)`**: Atualiza o nome de um rótulo, mantendo o mesmo ID e atualizando o índice B+.
+   - **`public boolean delete(String nomeRotulo)`**: Exclui o rótulo com o nome fornecido, removendo-o do arquivo e do índice, caso não haja tarefas associadas.
+   - **`public ArrayList<Rotulo> listar()`**: Retorna uma lista de todos os rótulos armazenados e os imprime no formato `"id) nome"`.
+
+   ---
+
+   ### Classe `ArquivoTarefa`
+
+A classe `ArquivoTarefa` gerencia a criação, leitura, atualização e exclusão de tarefas, além de otimizar buscas com o uso de índices B+ e um gerenciador de palavras-chave.
+
+#### Componentes da Classe
+
+1. **Campos**
+   - **`ArvoreBMais<ParIdId> indiceCategoriaParaTarefa`**: Índice B+ para associar IDs de categorias com IDs de tarefas.
+   - **`ArvoreBMais<ParIDRotulocID> indiceRotuloParaTarefa`**: Índice B+ para associar IDs de rótulos com IDs de tarefas.
+   - **`StopWords gerenciadorStopWords`**: Gerenciador de palavras-chave para a busca e processamento de stop words.
+
+2. **Construtores**
+   - **`public ArquivoTarefa()`**: Construtor que inicializa os índices B+ para categorias e rótulos, além de configurar o gerenciador de palavras-chave.
+
+3. **Métodos**
+   - **`@Override public int create(Tarefa tarefa)`**: Cria uma nova tarefa no arquivo e nos índices, além de adicionar palavras-chave associadas.
+   - **`public ArrayList<Tarefa> readAll(int idCategoria)`**: Retorna todas as tarefas associadas a uma categoria específica, usando o índice de categorias.
+   - **`public ArrayList<Tarefa> read(ParRotuloId parRotulo)`**: Retorna todas as tarefas associadas a um rótulo específico, usando o índice de rótulos.
+   - **`public boolean delete(Tarefa tarefa)`**: Exclui uma tarefa, removendo suas associações nos índices e gerenciador de palavras-chave.
+   - **`public boolean update(Tarefa tarefaAntiga, Tarefa tarefaNova)`**: Atualiza uma tarefa e ajusta as palavras-chave no gerenciador.
+   - **`public ArrayList<Tarefa> listar(String palavraChave)`**: Lista as tarefas baseadas em palavras-chave, ordenadas por relevância, utilizando o gerenciador de palavras-chave.
+   - **`public boolean updateRotulos(Tarefa tarefa, ArrayList<Integer> idsRemovidos, ArrayList<Integer> idsAdicionados)`**: Atualiza os rótulos associados a uma tarefa, adicionando ou removendo rótulos do índice e da tarefa.
+
+---
+
+### Classe `ParIDRotulocID`
+
+A classe `ParIDRotulocID` representa uma estrutura de dados que armazena um par de IDs: um ID de rótulo e um ID de tarefa. Esta estrutura é usada em índices B+ para associar rótulos a tarefas.
+
+#### Componentes da Classe
+
+1. **Campos**
+   - **`private int idRotulo`**: ID do rótulo.
+   - **`private int idTarefa`**: ID da tarefa.
+   - **`private final short TAMANHO = 8`**: Tamanho fixo (em bytes) do objeto `ParIDRotulocID`.
+
+2. **Construtores**
+   - **`public ParIDRotulocID()`**: Construtor padrão, inicializa os IDs como -1.
+   - **`public ParIDRotulocID(int idRotulo)`**: Construtor que inicializa o ID de rótulo e define o ID de tarefa como -1.
+   - **`public ParIDRotulocID(int idRotulo, int idTarefa)`**: Construtor que inicializa ambos os IDs, de rótulo e de tarefa.
+
+3. **Métodos**
+   - **`public void setidRotulo(int idRotulo)`**: Define o ID do rótulo.
+   - **`public void setidTarefa(int idTarefa)`**: Define o ID da tarefa.
+   - **`public int getidRotulo()`**: Retorna o ID do rótulo.
+   - **`public int getidTarefa()`**: Retorna o ID da tarefa.
+
+4. **Métodos adicionais**
+   - **`public ParIDRotulocID clone()`**: Retorna uma cópia do objeto `ParIDRotulocID`.
+   - **`public short size()`**: Retorna o tamanho do objeto em bytes (sempre 8).
+   - **`public int compareTo(ParIDRotulocID a)`**: Compara o objeto atual com outro objeto `ParIDRotulocID`. A comparação é feita primeiro pelo ID do rótulo e, se iguais, pelo ID da tarefa.
+   - **`public String toString()`**: Retorna uma representação do objeto como string no formato `"idRotulo; idTarefa"`.
+   - **`public byte[] toByteArray()`**: Converte o objeto para um array de bytes para armazenamento ou transmissão.
+   - **`public void fromByteArray(byte[] ba)`**: Lê os dados do objeto a partir de um array de bytes.
+
+#### Descrição
+
+A classe `ParIDRotulocID` é utilizada em operações de leitura e escrita para persistir e manipular associações entre tarefas e rótulos. Ela permite fácil comparação, clonagem, conversão para bytes e leitura de dados a partir de bytes, sendo ideal para seu uso em índices B+ e sistemas de banco de dados. 
+
+Os métodos de comparação e de conversão para array de bytes são essenciais para garantir a persistência eficiente e a integridade dos dados no armazenamento em disco.
+
+---
+
+### Classe `ParRotuloId`
+
+A classe `ParRotuloId` representa um par de dados composto por um nome de rótulo e um ID associado. Ela é usada principalmente em índices B+ e em sistemas de gerenciamento de dados que necessitam de associações entre rótulos e seus respectivos IDs. Essa classe implementa a interface `RegistroArvoreBMais<ParRotuloId>`, sendo adequada para armazenar e manipular esses pares de dados de forma eficiente.
+
+#### Componentes da Classe
+
+1. **Atributos**
+   - **`private String nome`**: O nome do rótulo.
+   - **`private int id`**: O ID associado ao rótulo.
+   - **`private short TAMANHO = 30`**: O tamanho fixo do registro, em bytes.
+
+2. **Construtores**
+   - **`public ParRotuloId()`**: Construtor padrão que inicializa o nome como uma string vazia e o ID como -1.
+   - **`public ParRotuloId(String n)`**: Construtor que inicializa o nome do rótulo e o ID como -1.
+   - **`public ParRotuloId(String n, int i)`**: Construtor que inicializa o nome e o ID. Lança uma exceção caso o nome tenha mais de 26 caracteres.
+
+3. **Métodos `GET` e `SET`**
+   - **`public String getNome()`**: Retorna o nome do rótulo.
+   - **`public int getId()`**: Retorna o ID do rótulo.
+   - **`public void setNome(String nome)`**: Define o nome do rótulo.
+   - **`public void setId(int id)`**: Define o ID do rótulo.
+
+4. **Métodos adicionais**
+   - **`@Override public ParRotuloId clone()`**: Cria uma cópia do objeto atual.
+   - **`public short size()`**: Retorna o tamanho do objeto em bytes (sempre 30).
+   - **`public int compareTo(ParRotuloId a)`**: Compara dois objetos `ParRotuloId` com base no nome, removendo acentuação e tornando as letras minúsculas.
+   - **`public String toString()`**: Retorna uma representação do objeto como string no formato `"nome; id"`.
+   - **`public byte[] toByteArray()`**: Converte o objeto em um array de bytes para armazenamento ou transmissão. O nome é ajustado para ter exatamente 26 caracteres.
+   - **`public void fromByteArray(byte[] ba)`**: Lê os dados do objeto a partir de um array de bytes.
+   - **`public static String transforma(String str)`**: Transforma uma string para minúsculas e remove os acentos (diacríticos), utilizando normalização.
+
+#### Descrição
+
+A classe `ParRotuloId` serve para representar um rótulo associado a um ID, sendo fundamental para organizar e manipular dados em sistemas de armazenamento como índices B+ ou bancos de dados. Seu principal objetivo é permitir a ordenação, leitura, escrita e comparação de rótulos de forma eficiente, garantindo também que o nome do rótulo seja bem formatado para armazenamento (limitando a 26 caracteres e normalizando acentuação). Ela também oferece suporte para conversão para e de arrays de bytes, facilitando a persistência dos dados em arquivos binários.
+
+A transformação dos nomes para minúsculas e a remoção de acentos tornam a classe mais robusta em relação à busca e comparação de rótulos, garantindo que diferentes formas de escrita não influenciem nas operações.
+
+---
+
+### Classe `StopWords`
+
+A classe `StopWords` gerencia palavras consideradas irrelevantes (stop words) para análise de textos, removendo-as de títulos e mantendo uma estrutura de dados invertida para armazenar as palavras processadas e suas frequências.
+
+#### Componentes da Classe
+
+1. **Campos**
+   - **`ArrayList<String> listaStopWords`**: Lista contendo as palavras classificadas como stop words.
+   - **`ListaInvertida listaInvertida`**: Estrutura de dados para gerenciar índices invertidos, armazenando palavras não consideradas stop words.
+
+2. **Construtores**
+   - **`public StopWords()`**: Construtor que inicializa a lista de stop words a partir de um arquivo e configura a estrutura da lista invertida.
+
+3. **Métodos**
+
+     - **`public String[] processarStopWords(String titulo)`**: 
+       - Divide o título em palavras.
+       - Converte cada palavra para minúsculas.
+       - Remove palavras que constam na lista de stop words.
+       - Retorna um array de palavras processadas.
+
+     - **`public void contarPalavras(ArrayList<ElementoLista> elementos, String[] palavras, int idElemento)`**: 
+       - Conta as palavras válidas (não vazias) em um título.
+       - Calcula a frequência relativa de cada palavra.
+       - Adiciona os dados à lista de elementos associados a uma tarefa.
+
+     - **`public void inserirTitulo(String titulo, int idTarefa)`**: 
+       - Processa o título removendo as stop words.
+       - Calcula a frequência relativa das palavras.
+       - Insere as palavras válidas e suas frequências na lista invertida.
+
+     - **`public void executarTeste(String[] args)`**: 
+       - Método para teste da funcionalidade da classe.
+       - Permite a entrada de títulos pelo console, adicionando-os à lista invertida.
+
+---
+
 
 ### Experiência de Desenvolvimento
 "Finalmente, relatem um pouco a experiência de vocês, explicando questões como: Vocês implementaram todos os requisitos? Houve alguma operação mais difícil? 
