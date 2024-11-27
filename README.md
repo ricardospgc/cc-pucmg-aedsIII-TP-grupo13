@@ -646,7 +646,9 @@ Vocês enfrentaram algum desafio na implementação? Os resultados foram alcanç
 A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. Aqui, a ideia é entender como foi para vocês desenvolver este TP."
 
 > Nessa etapa do desenvolvimento, tivemos muito mais dificuldade em relação às anteriores. Unir a Lista Invertida com o restante das estruturas para pesquisar a partir dos termos foi o ponto que achamos mais complicado. Também não conseguimos implementar completamente as relações N:N para todas as operações.
+
 > Investimos menos tempo nesse trabalho do que nos anteriores, e por isso o resultado não foi o desejado.
+
 > Para facilitar a cooperação, usamos muito a extensão Live Share do Visual Studio Code, que permite aos participantes acompanharem as mudanças em tempo real. Com isso, discutimos as dificuldades e diferentes estratégias.
 
 ---
