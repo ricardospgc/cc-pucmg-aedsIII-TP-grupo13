@@ -845,4 +845,42 @@ A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. 
   > Sim.
 
 ---
+---
+
 ## TP4
+
+Relatório
+"Descrevam um pouco o esforço. Uma descrição do seu trabalho nas suas próprias palavras. Basicamente, vocês devem responder à seguinte pergunta: O que o trabalho de vocês faz?"
+
+---
+
+### Descrição das Classes e Métodos (referentes ao TP4)
+
+
+---
+
+### Experiência de Desenvolvimento
+"Finalmente, relatem um pouco a experiência de vocês, explicando questões como: Vocês implementaram todos os requisitos? Houve alguma operação mais difícil? 
+Vocês enfrentaram algum desafio na implementação? Os resultados foram alcançados?
+A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. Aqui, a ideia é entender como foi para vocês desenvolver este TP."
+
+> Essa etapa final do desenvolvimento ocorreu sem grandes dificuldades, visto que o conteúdo foi bem compreendido e o nível de dificuldade da tarefa era menor.
+
+> Para facilitar a cooperação, usamos muito a extensão Live Share do Visual Studio Code, que permite aos participantes acompanharem as mudanças em tempo real. Com isso, discutimos as dificuldades e diferentes estratégias.
+
+---
+
+### Perguntas finais
+
+- Há uma rotina de compactação usando o algoritmo LZW para fazer backup dos arquivos?
+  > Sim.
+- Há uma rotina de descompactação usando o algoritmo LZW para recuperação dos arquivos?
+  > Sim.
+- O usuário pode escolher a versão a recuperar?
+  > Sim.
+- Qual foi a taxa de compressão alcançada por esse backup? (Compare o tamanho dos arquivos compactados com os arquivos originais)
+  > Não.
+- O trabalho está completo?
+  > Não.
+- O trabalho é original e não a cópia de um trabalho de um colega?
+  > Sim.
