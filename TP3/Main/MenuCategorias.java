@@ -53,7 +53,7 @@ public class MenuCategorias {
                     excluirCategoria();  // Chama o método para excluir uma categoria
                     break;
                 case 5:
-                    arqCategoria.listarCategoria();  // Chama o método para listar todas as categorias
+                    arqCategoria.listarCategorias();  // Chama o método para listar todas as categorias
                     break;
                 case 0:
                     break;
@@ -164,7 +164,7 @@ public class MenuCategorias {
         try {
             int idCategoria = arqCategoria.read(nome).getId();  // Busca o ID da categoria pelo nome
             if (!arqTarefa.readAll(idCategoria).isEmpty()) {  // Verifica se existem tarefas relacionadas à categoria
-                System.err.println("Nao eh possivel excluir, existem tarefas relacionadas");
+                System.err.println("Nao é possivel excluir, existem tarefas relacionadas");
                 return;
             }
         } catch (Exception e) {

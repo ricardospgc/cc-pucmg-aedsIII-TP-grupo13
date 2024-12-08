@@ -1,50 +1,54 @@
 package Main;
 
-import File.*;
 import Entidades.*;
+import File.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MenuRotulos {
+
     public static ArquivoRotulo arqRotulo;
     Scanner scanf = new Scanner(System.in);
 
     public void menu() throws Exception {
-        arqRotulo = new ArquivoRotulo();
-        int resposta = 0;
-        System.out.println("\n> Inicio > Rotulos");
-        System.out.println("1 - Incluir");
-        System.out.println("2 - Buscar");
-        System.out.println("3 - Alterar");
-        System.out.println("4 - Excluir");
-        System.out.println("0 - Voltar");
-        System.out.print("Opção: ");
-        resposta = Integer.parseInt(scanf.nextLine());
-        System.out.println();
-        switch (resposta) {
-            case 1:
-                criarRotulo();
-                break;
-            case 2:
-                listarRotulo();
-                break;
-            case 3:
-                atualizarRotulo();
-                break;
-            case 4:
-                deletarRotulo();
-                break;
-            case 5:
-                break;
-            default:
-                System.out.println("Opção Inválida");
-                break;
-        }
+
+        int opcao;
+        do {
+            arqRotulo = new ArquivoRotulo();
+            System.out.println("\n> Inicio > Rotulos");
+            System.out.println("1 - Incluir");
+            System.out.println("2 - Buscar");
+            System.out.println("3 - Alterar");
+            System.out.println("4 - Excluir");
+            System.out.println("0 - Voltar");
+            System.out.print("Opção: ");
+            opcao = Integer.parseInt(scanf.nextLine());
+            System.out.println();
+            switch (opcao) {
+                case 1:
+                    criarRotulo();
+                    break;
+                case 2:
+                    listarRotulo();
+                    break;
+                case 3:
+                    atualizarRotulo();
+                    break;
+                case 4:
+                    deletarRotulo();
+                    break;
+                case 5:
+                    break;
+                default:
+                    System.out.println("Opção Inválida");
+                    break;
+            }
+        } while (opcao != 0);
     }
 
     public void criarRotulo() throws Exception {
         try {
-            System.out.println("Digite o nome da Rotulo a ser criado:");
+            System.out.println("Digite o NOME DO ROTULO a ser criado:");
             arqRotulo.create(scanf.nextLine());
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -59,11 +63,11 @@ public class MenuRotulos {
         try {
             arqRotulo.listar();
 
-            System.out.print("\nDigite o nome do Rotulo que deseja listar as tarefas: ");
+            System.out.print("\nDigite o NOME DO ROTULO que deseja listar as tarefas: ");
 
             nomeRotulo = scanf.nextLine();
 
-            ArrayList<Tarefa> t = arqRotulo.read(nomeRotulo);
+            ArrayList<Tarefa> t = arqRotulo.readTarefasPorRotulo(nomeRotulo);
 
             // Itera sobre os rotulos
             for (Tarefa tmp : t) {
@@ -80,7 +84,7 @@ public class MenuRotulos {
         try {
             arqRotulo.listar();
 
-            System.out.print("Digite o nome do Rotulo que deseja atualizar: ");
+            System.out.print("Digite o NOME DO ROTULO que deseja atualizar: ");
             nomeRotulo = scanf.nextLine();
 
             ArrayList<Rotulo> t = arqRotulo.listar();
@@ -95,7 +99,7 @@ public class MenuRotulos {
                 return;
             }
 
-            System.out.println("Digite o nome do novo Rotulo");
+            System.out.println("Digite o nome do novo Rotulo:");
             novaRotulo = scanf.nextLine();
 
             arqRotulo.update(nomeRotulo, novaRotulo);
@@ -111,7 +115,7 @@ public class MenuRotulos {
             ArrayList<Rotulo> Rotulos = arqRotulo.listar();
             System.out.println();
 
-            System.out.print("Digite o indice do Rotulo que deseja deletar: ");
+            System.out.print("Digite o INDICE DO ROTULO que deseja deletar: ");
             int index = scanf.nextInt();
             if (index < 0 || index > Rotulos.size()) {
                 System.out.println("Indice invalido");
