@@ -1055,7 +1055,7 @@ A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. 
 - O usuário pode escolher a versão a recuperar?
   > Sim.
 - Qual foi a taxa de compressão alcançada por esse backup? (Compare o tamanho dos arquivos compactados com os arquivos originais)
-  > Sim.
+  > 46,5%.
 - O trabalho está funcionando corretamente?
   > Sim.
 - O trabalho está completo?
