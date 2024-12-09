@@ -845,4 +845,220 @@ A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. 
   > Sim.
 
 ---
+---
 ## TP4
+
+Relatório
+"Descrevam um pouco o esforço. Uma descrição do seu trabalho nas suas próprias palavras. Basicamente, vocês devem responder à seguinte pergunta: O que o trabalho de vocês faz?"
+
+## Descrição do Trabalho
+
+> O Trabalho Prático 4 (TP4) implementa uma rotina de backup compactado para todos os arquivos de dados e índices do sistema, utilizando o algoritmo de compressão **LZW**. O objetivo é armazenar todos os arquivos de forma eficiente, em um único arquivo compactado, permitindo tanto a criação do backup quanto a recuperação dos dados.
+
+### Funcionalidades Implementadas
+
+1. **Compactação de Dados**:
+   - Todos os arquivos de dados e índices são lidos como vetores de bytes.
+   - Utiliza o algoritmo **LZW** com dicionário de 12 bits para compactar os dados.
+   - Compacta múltiplos arquivos em um único arquivo de backup.
+
+2. **Armazenamento no Arquivo Compactado**:
+   - Para cada arquivo, o backup inclui:
+     1. Nome do arquivo original.
+     2. Tamanho do vetor de bytes compactado.
+     3. Vetor de bytes compactados.
+
+3. **Criação de Pastas de Backup**:
+   - Cada backup é armazenado em uma pasta nomeada com a data/hora da criação, permitindo a organização e versionamento.
+
+4. **Recuperação de Dados**:
+   - O sistema permite ao usuário selecionar a versão do backup para descompactação.
+   - Recria os arquivos de dados e índices a partir do arquivo compactado.
+
+---
+
+---
+
+### Descrição das Classes e Métodos (referentes ao TP4)
+
+# Descrição das Classes e Métodos
+
+## Classe `Backup`
+
+A classe **`Backup`** é responsável por realizar operações de backup e restauração de arquivos, utilizando o algoritmo de compressão LZW para compactação dos dados. Além disso, ela fornece ferramentas para listar e gerenciar backups.
+
+### Atributos
+
+- **`backupDir`**: Caminho do diretório onde os backups são armazenados.
+- **`dataDir`**: Caminho do diretório onde os dados estão localizados.
+
+### Métodos
+
+#### 1. `Backup()`
+- **Descrição**: Construtor da classe que inicializa os diretórios de backup e dados, criando-os caso não existam.
+- **Retorno**: Nenhum.
+
+#### 2. `getBackupDir()`
+- **Descrição**: Retorna o caminho do diretório de backups.
+- **Retorno**: `String` - Caminho do diretório de backup.
+
+#### 3. `getDataDir()`
+- **Descrição**: Retorna o caminho do diretório de dados.
+- **Retorno**: `String` - Caminho do diretório de dados.
+
+#### 4. `createBackup(String backupFileName)`
+- **Descrição**: Cria um backup compactado dos dados presentes no diretório de dados. Os dados são serializados e comprimidos utilizando o algoritmo LZW, sendo armazenados no diretório de backups.
+- **Parâmetros**: `backupFileName` - Nome do arquivo de backup.
+- **Retorno**: Nenhum.
+
+#### 5. `restoreBackup(String backupFileName)`
+- **Descrição**: Restaura os dados de um arquivo de backup compactado. Os dados são descompactados e desserializados, recriando os arquivos originais no diretório de dados.
+- **Parâmetros**: `backupFileName` - Nome do arquivo de backup a ser restaurado.
+- **Retorno**: Nenhum.
+
+#### 6. `listBackups()`
+- **Descrição**: Lista todos os backups disponíveis no diretório de backup.
+- **Retorno**: `ArrayList<String>` - Lista de nomes dos backups.
+
+#### 7. `calculateCompressionRate(byte[] originalData, byte[] compressedData)`
+- **Descrição**: Calcula a taxa de compressão entre os dados originais e comprimidos.
+- **Parâmetros**: `originalData` - Dados originais; `compressedData` - Dados comprimidos.
+- **Retorno**: `double` - Taxa de compressão em porcentagem.
+
+#### 8. `serializeFiles(File[] files)`
+- **Descrição**: Serializa os arquivos de um diretório em um array de bytes.
+- **Parâmetros**: `files` - Array de arquivos a serem serializados.
+- **Retorno**: `byte[]` - Dados serializados.
+
+#### 9. `clearDirectory(String directoryPath)`
+- **Descrição**: Remove todos os arquivos e subdiretórios de um diretório especificado.
+- **Parâmetros**: `directoryPath` - Caminho do diretório a ser limpo.
+- **Retorno**: Nenhum.
+
+#### 10. `createDirectory(String directoryPath)`
+- **Descrição**: Cria um diretório no caminho especificado, se não existir.
+- **Parâmetros**: `directoryPath` - Caminho do diretório a ser criado.
+- **Retorno**: Nenhum.
+
+#### 11. `readFile(File file)`
+- **Descrição**: Lê os dados de um arquivo e os retorna como um array de bytes.
+- **Parâmetros**: `file` - Arquivo a ser lido.
+- **Retorno**: `byte[]` - Dados do arquivo.
+
+#### 12. `writeFile(String filePath, byte[] data)`
+- **Descrição**: Escreve um array de bytes em um arquivo especificado.
+- **Parâmetros**: `filePath` - Caminho do arquivo de destino; `data` - Dados a serem escritos.
+- **Retorno**: Nenhum.
+
+---
+
+## Classe `LZW`
+
+A classe **`LZW`** implementa a codificação e decodificação de uma mensagem usando o algoritmo LZW. Essa classe transforma strings em sequências de índices e converte essas sequências em vetores de bits para compactação.
+
+### Métodos
+
+#### 1. `main(String[] args)`
+- **Descrição**: Método principal para teste de codificação e decodificação, exibindo a eficiência da compressão.
+- **Retorno**: Nenhum.
+
+#### 2. `codifica(byte[] msgBytes)`
+- **Descrição**: Codifica uma mensagem em um vetor de índices usando o algoritmo LZW.
+- **Parâmetros**: `msgBytes` - Mensagem em bytes a ser codificada.
+- **Retorno**: `byte[]` - Mensagem codificada em forma de vetor de bits.
+
+#### 3. `decodifica(byte[] msgCodificada)`
+- **Descrição**: Decodifica uma mensagem codificada em um vetor de bits e retorna a mensagem original.
+- **Parâmetros**: `msgCodificada` - Mensagem codificada em vetor de bits.
+- **Retorno**: `byte[]` - Mensagem original decodificada.
+
+---
+
+## Classe `VetorDeBits`
+
+A classe **`VetorDeBits`** gerencia operações com vetores de bits, suportando a conversão de bytes para vetores de bits e vice-versa.
+
+### Atributos
+
+- **`vetor`**: Objeto `BitSet` que armazena os bits.
+
+### Métodos
+
+#### 1. `VetorDeBits()`
+- **Descrição**: Construtor padrão que inicializa um vetor de bits com um bit definido.
+- **Retorno**: Nenhum.
+
+#### 2. `VetorDeBits(int n)`
+- **Descrição**: Construtor que inicializa um vetor de bits com um tamanho específico.
+- **Parâmetros**: `n` - Tamanho do vetor.
+- **Retorno**: Nenhum.
+
+#### 3. `VetorDeBits(byte[] v)`
+- **Descrição**: Construtor que cria um vetor de bits a partir de um array de bytes.
+- **Parâmetros**: `v` - Array de bytes.
+- **Retorno**: Nenhum.
+
+#### 4. `toByteArray()`
+- **Descrição**: Converte o vetor de bits em um array de bytes.
+- **Retorno**: `byte[]` - Array de bytes representando o vetor de bits.
+
+#### 5. `set(int i)`
+- **Descrição**: Define um bit específico no vetor.
+- **Parâmetros**: `i` - Índice do bit a ser definido.
+- **Retorno**: Nenhum.
+
+#### 6. `clear(int i)`
+- **Descrição**: Limpa um bit específico no vetor.
+- **Parâmetros**: `i` - Índice do bit a ser limpo.
+- **Retorno**: Nenhum.
+
+#### 7. `get(int i)`
+- **Descrição**: Retorna o valor de um bit específico.
+- **Parâmetros**: `i` - Índice do bit.
+- **Retorno**: `boolean` - Valor do bit.
+
+#### 8. `length()`
+- **Descrição**: Retorna o comprimento do vetor de bits.
+- **Retorno**: `int` - Comprimento do vetor de bits.
+
+#### 9. `size()`
+- **Descrição**: Retorna o tamanho do vetor de bits.
+- **Retorno**: `int` - Tamanho do vetor de bits.
+
+#### 10. `toString()`
+- **Descrição**: Retorna uma representação em string do vetor de bits.
+- **Retorno**: `String` - Representação em string do vetor de bits.
+
+
+---
+
+
+### Experiência de Desenvolvimento
+"Finalmente, relatem um pouco a experiência de vocês, explicando questões como: Vocês implementaram todos os requisitos? Houve alguma operação mais difícil? 
+Vocês enfrentaram algum desafio na implementação? Os resultados foram alcançados?
+A ideia, portanto, é relatar como foi a experiência de desenvolvimento do TP. Aqui, a ideia é entender como foi para vocês desenvolver este TP."
+
+> Durante o desenvolvimento do TP4, encontramos desafios relacionados à compactação em fluxo de bytes, evitando o carregamento de arquivos inteiros na memória. Além disso, a integração do algoritmo **LZW** com a estrutura de arquivos do sistema exigiu uma boa organização do código.
+
+> Embora todas as funcionalidades principais tenham sido implementadas, a otimização da lógica de compressão e descompressão, especialmente em arquivos maiores, foi o ponto mais desafiador.
+
+> Utilizamos ferramentas como **Visual Studio Code** (com a extensão Live Share) para trabalho colaborativo em tempo real, o que facilitou a identificação e resolução de problemas.
+
+---
+
+### Perguntas finais
+
+- Há uma rotina de compactação usando o algoritmo LZW para fazer backup dos arquivos?
+  > Sim.
+- Há uma rotina de descompactação usando o algoritmo LZW para recuperação dos arquivos?
+  > Sim.
+- O usuário pode escolher a versão a recuperar?
+  > Sim.
+- Qual foi a taxa de compressão alcançada por esse backup? (Compare o tamanho dos arquivos compactados com os arquivos originais)
+  > Sim.
+- O trabalho está funcionando corretamente?
+  > Sim.
+- O trabalho está completo?
+  > Sim.
+- O trabalho é original e não a cópia de um trabalho de um colega?  
+  > Sim.

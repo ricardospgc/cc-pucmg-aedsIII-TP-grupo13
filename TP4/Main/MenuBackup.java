@@ -11,16 +11,24 @@ class MenuBackup extends Principal {
     private static Backup backup;
     private static Scanner sc;
 
+    /*
+    func: MenuBackup
+    Construtor que inicializa a classe Backup.
+    Retornos: Nenhum
+     */
     public MenuBackup() throws Exception {
         backup = new Backup();
-    } // MenuBackup ( )
+    }
 
+    /*
+    func: menu
+    Exibe o menu principal para realizar ou restaurar backups.
+    Retornos: Nenhum
+     */
     public void menu() {
         try {
-            sc = new Scanner(System.in);  // Scanner para leitura de entrada do usuário
+            sc = new Scanner(System.in);
             int opcao;
-
-            // Loop do menu principal do programa
             do {
                 System.out.println("\n> ----------------------");
                 System.out.println("> Início > Backup        ");
@@ -28,15 +36,11 @@ class MenuBackup extends Principal {
                 System.out.println("2 - Restaurar Backup     ");
                 System.out.println("0 - Voltar               ");
                 System.out.print("Opção: ");
-                System.out.print("Opcao: ");
-
                 try {
-                    opcao = Integer.valueOf(sc.nextLine());  // Leitura da opção do usuário
+                    opcao = Integer.valueOf(sc.nextLine());
                 } catch (NumberFormatException e) {
-                    opcao = -1;  // Caso o valor não seja numérico, define a opção como inválida
+                    opcao = -1;
                 }
-
-                // Switch para tratar cada opção do menu principal
                 switch (opcao) {
                     case 0:
                         break;
@@ -50,14 +54,18 @@ class MenuBackup extends Principal {
                         System.err.println("Opção inválida.");
                         break;
                 }
-
-            } while (opcao != 0);  // Repete o menu até que o usuário escolha sair
+            } while (opcao != 0);
 
         } catch (Exception e) {
-            e.printStackTrace();  // Exibe o stack trace em caso de erro inesperado
+            e.printStackTrace();
         }
     }
 
+    /*
+    func: realizarBackup
+    Solicita confirmação do usuário e realiza o backup dos dados.
+    Retornos: Nenhum
+     */
     public static void realizarBackup() throws Exception {
         System.out.println("\n> Relizando Backup:");
         try {
@@ -69,34 +77,35 @@ class MenuBackup extends Principal {
                 System.out.println("Backup realizado com sucesso.");
             } else {
                 System.out.println("Operação cancelada.");
-            } // if
+            }
         } catch (Exception e) {
             System.err.println("Erro ao realizar backup.");
-        } // try-catch
-    } // realizarBackup ( )
+        }
+    }
 
+    /*
+    func: restaurarBackup
+    Lista os backups disponíveis e restaura o backup selecionado pelo usuário.
+    Retornos: Nenhum
+     */
     public static void restaurarBackup() throws Exception {
         System.out.println("\n> Restaurar Backup:");
 
         try {
             ArrayList<String> backupsList = backup.listBackups();
-
             if (!backupsList.isEmpty()) {
                 System.out.print("ID do arquivo de backup: ");
                 String input = sc.nextLine();
-
                 if (input.length() > 0) {
                     int idBackup = Integer.parseInt(input);
                     backup.restoreBackup(backupsList.get(idBackup - 1) + ".db");
                     System.out.println("Backup restaurado com sucesso.");
                 } else {
                     System.err.println("ID inválido. Operação cancelada!");
-                } // if
-
-            } // if
+                } 
+            } 
         } catch (Exception e) {
             System.err.println("Erro ao restaurar backup.");
-        } // try-catch
-    } // restaurarBackup ( )
-
-} // MenuBackup
+        } 
+    } 
+} 
